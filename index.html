@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>FlowMatch - מוצאים את המטפל הנכון, בלי ללכת לאיבוד</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="פלטפורמה חכמה להתאמה בין הורים למטפלים פרא-רפואיים. קודם התאמה מדויקת, אחר כך - סיוע ביטוחי." />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-content">
+      <div class="loading-logo">
+        <div class="logo-pulse"></div>
+        <span class="logo-text">FlowMatch</span>
+      </div>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <!-- Enhanced Header -->
+    <header class="top-bar">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="36" height="36" rx="10" fill="url(#logo-gradient)"/>
+            <path d="M12 18L16 22L24 14" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="logo-gradient" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#3d7bfd"/>
+                <stop offset="1" stop-color="#22c1c3"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">FlowMatch</div>
+          <div class="brand-tagline">קודם התאמה, אחר כך ביטוח</div>
+        </div>
+      </div>
+      <nav class="top-nav">
+        <button class="nav-btn" data-view="landing">
+          <span class="nav-icon">🏠</span>
+          <span>דף הבית</span>
+        </button>
+        <button class="nav-btn" data-view="parent-flow">
+          <span class="nav-icon">👨‍👩‍👧</span>
+          <span>להורים</span>
+        </button>
+        <button class="nav-btn" data-view="therapist-flow">
+          <span class="nav-icon">🧑‍⚕️</span>
+          <span>למטפלים</span>
+        </button>
+        <button class="nav-btn nav-btn-secondary" data-view="insurance">
+          <span class="nav-icon">💰</span>
+          <span>ביטוח</span>
+        </button>
+        <button class="nav-btn nav-btn-demo" data-view="demo-center">
+          <span class="nav-icon">🎭</span>
+          <span>דמו</span>
+        </button>
+      </nav>
+    </header>
+
+    <main class="main-content">
+      <!-- Landing Page -->
+      <section id="landing" class="view active">
+        <!-- Hero Section -->
+        <div class="hero">
+          <div class="hero-content">
+            <div class="hero-badge">
+              <span class="badge-icon">✨</span>
+              <span>פלטפורמת התאמה חכמה</span>
+            </div>
+            <h1 class="hero-title">
+              מוצאים את המטפל הנכון,<br/>
+              <span class="gradient-text">בלי ללכת לאיבוד בדרך</span>
+            </h1>
+            <p class="hero-subtitle">
+              חיבור חכם בין הורים למטפלים פרא-רפואיים. התאמה מדויקת לפי צרכים אמיתיים –
+              <strong>וכשמצאנו את מי שמתאים</strong>, נעזור לכם להבין מה מגיע מהביטוח.
+            </p>
+            
+            <div class="hero-cta">
+              <button class="cta-btn cta-primary js-start-parent">
+                <span class="btn-icon">👨‍👩‍👧</span>
+                <span class="btn-text">
+                  <strong>אני הורה</strong>
+                  <small>מחפש/ת טיפול לילד/ה</small>
+                </span>
+              </button>
+              <button class="cta-btn cta-secondary js-start-therapist">
+                <span class="btn-icon">🧑‍⚕️</span>
+                <span class="btn-text">
+                  <strong>אני מטפל/ת</strong>
+                  <small>רוצה לקבל פניות איכותיות</small>
+                </span>
+              </button>
+            </div>
+
+            <div class="hero-note">
+              <div class="note-icon">💡</div>
+              <p>
+                <strong>הגישה שלנו:</strong> קודם תנו להם את מה שהם <em>רוצים</em> (התאמה מדויקת) – 
+                אחר כך תספקו את מה שהם <em>צריכים</em> (כיסוי ביטוחי).
+              </p>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <div class="visual-card">
+              <div class="card-header">
+                <span class="card-icon">🎯</span>
+                <h3>איך זה עובד?</h3>
+              </div>
+              <ol class="steps-list">
+                <li>
+                  <span class="step-number">1</span>
+                  <div class="step-content">
+                    <strong>ספרו לנו על הצורך</strong>
+                    <p>גיל, סוג טיפול, והעדפות</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="step-number">2</span>
+                  <div class="step-content">
+                    <strong>קבלו התאמות חכמות</strong>
+                    <p>מטפלים רלוונטיים עם ניקוד התאמה</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="step-number">3</span>
+                  <div class="step-content">
+                    <strong>בחרו ותקבעו תור</strong>
+                    <p>ישירות דרך הפלטפורמה</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="step-number">4</span>
+                  <div class="step-content">
+                    <strong>בדקו זכאות ביטוחית</strong>
+                    <p>רק אם תרצו - אחרי ההתאמה</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <!-- Value Proposition Cards -->
+        <div class="value-cards">
+          <h2 class="section-title">שתי פלטפורמות, חוויה אחת</h2>
+          
+          <div class="platform-cards">
+            <article class="platform-card platform-match">
+              <div class="platform-header">
+                <div class="platform-icon">🎯</div>
+                <div>
+                  <h3>FlowMatch</h3>
+                  <p class="platform-subtitle">פלטפורמת ההתאמה</p>
+                </div>
+                <span class="platform-badge">ליבת המערכת</span>
+              </div>
+              
+              <div class="platform-body">
+                <p class="platform-desc">
+                  זו הבעיה שאנחנו באמת פותרים: <strong>איך מוצאים את המטפל הנכון?</strong>
+                  במקום עשרות טלפונים וניסוי-טעייה, אנחנו יוצרים התאמה מדויקת.
+                </p>
+                
+                <ul class="platform-features">
+                  <li>
+                    <span class="feature-icon">✓</span>
+                    <span>שאלון חכם שמבין צרכים רגשיים, התפתחותיים ופיזיים</span>
+                  </li>
+                  <li>
+                    <span class="feature-icon">✓</span>
+                    <span>התאמה לפי גיל, תת-התמחויות, שפה, זמינות ואזור</span>
+                  </li>
+                  <li>
+                    <span class="feature-icon">✓</span>
+                    <span>אפשרות לצירוף מסמכים (דוח, אבחון, המלצות)</span>
+                  </li>
+                  <li>
+                    <span class="feature-icon">✓</span>
+                    <span>ציון התאמה אוטומטי לכל מטפל</span>
+                  </li>
+                </ul>
+
+                <button class="platform-cta js-start-parent">
+                  התחל תהליך התאמה
+                  <span class="cta-arrow">←</span>
+                </button>
+              </div>
+            </article>
+
+            <div class="platform-connector">
+              <div class="connector-line"></div>
+              <div class="connector-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12h14m0 0l-6-6m6 6l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="connector-text">אחרי ההתאמה</div>
+            </div>
+
+            <article class="platform-card platform-insurance">
+              <div class="platform-header">
+                <div class="platform-icon">💰</div>
+                <div>
+                  <h3>FlowInsurance</h3>
+                  <p class="platform-subtitle">פלטפורמת הביטוח המשלימה</p>
+                </div>
+                <span class="platform-badge platform-badge-secondary">משלים</span>
+              </div>
+              
+              <div class="platform-body">
+                <p class="platform-desc">
+                  <strong>מצאתם מטפל מתאים? מעולה!</strong> עכשיו בואו נראה איך לממן את זה.
+                  ניתוח פוליסות, בדיקת זכאות והחזרים – בשפה פשוטה.
+                </p>
+                
+                <ul class="platform-features">
+                  <li>
+                    <span class="feature-icon">✓</span>
+                    <span>סריקת פוליסה חכמה (דמו AI)</span>
+                  </li>
+                  <li>
+                    <span class="feature-icon">✓</span>
+                    <span>ניתוח זכאות ויתרות שנתיות</span>
+                  </li>
+                  <li>
+                    <span class="feature-icon">✓</span>
+                    <span>הדרכה להגשת תביעות</span>
+                  </li>
+                  <li>
+                    <span class="feature-icon">✓</span>
+                    <span>חיבור עתידי למערכות ביטוח</span>
+                  </li>
+                </ul>
+
+                <button class="platform-cta platform-cta-secondary" data-view="insurance">
+                  למודול הביטוח
+                  <span class="cta-arrow">←</span>
+                </button>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features-section">
+          <h2 class="section-title">למה FlowMatch שונה?</h2>
+          
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon-wrapper">
+                <span class="feature-emoji">🎯</span>
+              </div>
+              <h3>התאמה מדויקת במקום חיפוש אינסופי</h3>
+              <p>
+                לא עוד עשרות טלפונים והרגשת "ניסוי וטעייה". המערכת מרכזת את הצורך, 
+                ההעדפות והמידע הרלוונטי ויוצרת התאמה מבוססת נתונים.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon-wrapper">
+                <span class="feature-emoji">🧠</span>
+              </div>
+              <h3>אלגוריתם למידה (בעתיד)</h3>
+              <p>
+                המערכת תלמד מהצלחות והתאמות קודמות כדי לשפר את איכות ההמלצות. 
+                כל הפניה מחכימה את המערכת.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon-wrapper">
+                <span class="feature-emoji">⚡</span>
+              </div>
+              <h3>תהליך מהיר וידידותי</h3>
+              <p>
+                4 שלבים פשוטים, 5-7 דקות בממוצע. השאלון מותאם לגיל הילד ולסוג הטיפול, 
+                כך שאתם עונים רק על מה שרלוונטי.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon-wrapper">
+                <span class="feature-emoji">💎</span>
+              </div>
+              <h3>שקיפות מלאה</h3>
+              <p>
+                רואים למה המלצנו על כל מטפל, מה הניקוד שלו ועל סמך אילו קריטריונים. 
+                אין "קופסא שחורה" – הכל פתוח וברור.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon-wrapper">
+                <span class="feature-emoji">📊</span>
+              </div>
+              <h3>דשבורד משפחתי (בפיתוח)</h3>
+              <p>
+                מעקב אחר כל הילדים, המטפלים והטיפולים במקום אחד. 
+                כולל סטטוס החזרים, פגישות קרובות ותיעוד מסודר.
+              </p>
+            </div>
+
+            <div class="feature-card feature-card-highlight">
+              <div class="feature-icon-wrapper">
+                <span class="feature-emoji">🔗</span>
+              </div>
+              <h3>חיבור לביטוח – רק כשצריך</h3>
+              <p>
+                <strong>הגישה שלנו:</strong> קודם מוצאים את המטפל הנכון. 
+                רק אחרי שמצאנו התאמה, אפשר לעבור לבדיקת זכאות ביטוחית. 
+                לא להפך.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+          <div class="cta-content">
+            <h2>מוכנים להתחיל?</h2>
+            <p>בואו נמצא את המטפל המתאים בדיוק לצרכים שלכם</p>
+            <div class="cta-buttons">
+              <button class="cta-btn cta-primary js-start-parent">
+                <span class="btn-icon">👨‍👩‍👧</span>
+                <span class="btn-text">
+                  <strong>התחל כהורה</strong>
+                  <small>תהליך התאמה חכם</small>
+                </span>
+              </button>
+              <button class="cta-btn cta-secondary js-start-therapist">
+                <span class="btn-icon">🧑‍⚕️</span>
+                <span class="btn-text">
+                  <strong>הצטרף כמטפל</strong>
+                  <small>קבל פניות איכותיות</small>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Parent Flow (מעודכן) -->
+      <section id="parent-flow" class="view">
+        <div class="flow-header">
+          <div class="flow-header-content">
+            <button class="back-btn js-back-home" data-view="landing">
+              <span>←</span> חזרה
+            </button>
+            <div>
+              <h2>התאמה חכמה למטפל/ת</h2>
+              <p>מילוי קצר שיעזור לנו להבין את הצורך ולהציג התאמות מדויקות</p>
+            </div>
+          </div>
+          <div class="flow-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" id="parentProgress"></div>
+            </div>
+            <span class="progress-text" id="parentProgressText">שלב 1 מתוך 4</span>
+          </div>
+        </div>
+
+        <div class="flow-layout">
+          <aside class="stepper">
+            <div class="stepper-item active" data-step="1">
+              <span class="step-number">1</span>
+              <span class="step-label">פרטי ילד/ה</span>
+            </div>
+            <div class="stepper-item" data-step="2">
+              <span class="step-number">2</span>
+              <span class="step-label">סוג טיפול</span>
+            </div>
+            <div class="stepper-item" data-step="3">
+              <span class="step-number">3</span>
+              <span class="step-label">מה חשוב לכם</span>
+            </div>
+            <div class="stepper-item" data-step="4">
+              <span class="step-number">4</span>
+              <span class="step-label">מסמכים</span>
+            </div>
+          </aside>
+
+          <form class="flow-form" id="parent-form">
+            <!-- שלב 1: פרטי ילד -->
+            <section class="step-panel active" data-step="1">
+              <h3>פרטים בסיסיים על הילד/ה</h3>
+              <p class="step-hint">נתחיל עם פרטים כלליים כדי להבין את הצורך</p>
+
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="child-name">
+                    שם פרטי
+                    <span class="field-optional">(לא חובה)</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="child-name"
+                    name="child_name" 
+                    placeholder="אפשר להשאיר ריק"
+                    class="form-input"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label for="child-age">
+                    גיל הילד/ה
+                    <span class="field-required">*</span>
+                  </label>
+                  <select 
+                    id="child-age"
+                    name="child_age" 
+                    required
+                    class="form-input"
+                  >
+                    <option value="">בחרו גיל</option>
+                    <option value="0-3">0–3 שנים</option>
+                    <option value="3-6">3–6 שנים</option>
+                    <option value="6-9">6–9 שנים</option>
+                    <option value="9-12">9–12 שנים</option>
+                    <option value="12-16">12–16 שנים</option>
+                    <option value="16+">16+ שנים</option>
+                  </select>
+                  <div class="field-error" data-field="child_age"></div>
+                </div>
+
+                <div class="form-field">
+                  <label for="location">
+                    אזור מגורים
+                    <span class="field-required">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="location"
+                    name="location" 
+                    placeholder="עיר / ישוב"
+                    required
+                    class="form-input"
+                    data-autocomplete="city"
+                  />
+                  <div class="field-error" data-field="location"></div>
+                </div>
+
+                <div class="form-field">
+                  <label for="language">שפת הטיפול המועדפת</label>
+                  <select 
+                    id="language"
+                    name="language"
+                    class="form-input"
+                  >
+                    <option value="">לא משנה</option>
+                    <option value="hebrew">עברית</option>
+                    <option value="arabic">ערבית</option>
+                    <option value="english">אנגלית</option>
+                    <option value="russian">רוסית</option>
+                    <option value="other">אחר</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-primary js-next-step" data-next="2">
+                  המשך לשלב הבא
+                  <span class="btn-arrow">←</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- שלב 2: סוג טיפול -->
+            <section class="step-panel" data-step="2">
+              <h3>איזה סוג טיפול אתם מחפשים?</h3>
+              <p class="step-hint">ככל שתהיו יותר ספציפיים, ההתאמה תהיה טובה יותר</p>
+
+              <div class="form-field">
+                <label for="main-treatment">
+                  סוג טיפול מרכזי
+                  <span class="field-required">*</span>
+                </label>
+                <select 
+                  id="main-treatment"
+                  name="main_treatment" 
+                  required
+                  class="form-input"
+                >
+                  <option value="">בחרו סוג טיפול</option>
+                  <option value="speech">קלינאות תקשורת</option>
+                  <option value="ot">ריפוי בעיסוק</option>
+                  <option value="physio">פיזיותרפיה</option>
+                  <option value="emotional">טיפול רגשי</option>
+                  <option value="psychology">פסיכולוגיה</option>
+                  <option value="other">אחר</option>
+                </select>
+                <div class="field-error" data-field="main_treatment"></div>
+              </div>
+
+              <div class="form-field">
+                <label for="sub-specialty">תת-התמחות ספציפית</label>
+                <select 
+                  id="sub-specialty"
+                  name="sub_specialty"
+                  class="form-input"
+                >
+                  <option value="">בחרו תת-התמחות (אופציונלי)</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label for="main-concern">
+                  ספרו לנו בקצרה מה האתגר העיקרי
+                </label>
+                <textarea
+                  id="main-concern"
+                  name="main_concern"
+                  rows="4"
+                  placeholder="למשל: קושי בהגיית אותיות, חרדה חברתית, קשיי כתיבה, עיכוב התפתחותי..."
+                  class="form-input"
+                ></textarea>
+                <div class="field-hint">
+                  המידע הזה יעזור למטפלים להבין טוב יותר את הצורך
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-secondary js-prev-step" data-prev="1">
+                  <span class="btn-arrow">→</span>
+                  חזרה
+                </button>
+                <button type="button" class="btn btn-primary js-next-step" data-next="3">
+                  המשך
+                  <span class="btn-arrow">←</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- שלב 3: העדפות -->
+            <section class="step-panel" data-step="3">
+              <h3>מה הכי חשוב לכם במטפל/ת?</h3>
+              <p class="step-hint">בחרו את המאפיינים החשובים לכם. אפשר לבחור כמה שרוצים.</p>
+
+              <div class="preferences-section">
+                <label class="preferences-label">העדפות חשובות:</label>
+                <div class="chip-group" data-name="parent_preferences">
+                  <button type="button" class="chip">
+                    <span class="chip-icon">⚡</span>
+                    זמינות מהירה
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🎓</span>
+                    ניסיון עם חינוך מיוחד
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">💻</span>
+                    טיפול אונליין
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🏠</span>
+                    הגעה לבית
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">📍</span>
+                    קליניקה נגישה
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🤝</span>
+                    עבודה בשיתוף בית הספר
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">💚</span>
+                    דגש רגשי / ביטחון עצמי
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🗣️</span>
+                    שפה מסוימת
+                  </button>
+                </div>
+                <input type="hidden" name="parent_preferences" />
+              </div>
+
+              <div class="form-field">
+                <label for="parent-notes">
+                  מה עוד חשוב לכם שנדע?
+                </label>
+                <textarea
+                  id="parent-notes"
+                  name="parent_notes"
+                  rows="4"
+                  placeholder="למשל: ביישנות, קשיים חברתיים, רגישויות, דברים שעבדו טוב בעבר..."
+                  class="form-input"
+                ></textarea>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-secondary js-prev-step" data-prev="2">
+                  <span class="btn-arrow">→</span>
+                  חזרה
+                </button>
+                <button type="button" class="btn btn-primary js-next-step" data-next="4">
+                  המשך למסמכים
+                  <span class="btn-arrow">←</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- שלב 4: מסמכים -->
+            <section class="step-panel" data-step="4">
+              <h3>מסמכים שיכולים לעזור להתאמה</h3>
+              <p class="step-hint">
+                לא חובה, אבל מאוד מקדם. אפשר לצרף: דוח גננת, אבחון, סיכום טיפול, המלצה וכדומה.
+              </p>
+
+              <div class="upload-area">
+                <div class="upload-zone" id="upload-zone">
+                  <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4m14-7l-5-5m0 0L7 8m5-5v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <p class="upload-text">
+                    <strong>גררו קבצים לכאן</strong> או לחצו לבחירה
+                  </p>
+                  <p class="upload-hint">PDF, DOC, JPG, PNG עד 10MB</p>
+                  <input type="file" id="parent-docs" name="parent_docs" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" hidden />
+                </div>
+                <div class="uploaded-files" id="uploaded-files"></div>
+              </div>
+
+              <div class="info-banner">
+                <span class="banner-icon">ℹ️</span>
+                <p>בגרסת ה-MVP ההעלאה היא הדגמה בלבד – הקבצים אינם נשמרים בשרת.</p>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-secondary js-prev-step" data-prev="3">
+                  <span class="btn-arrow">→</span>
+                  חזרה
+                </button>
+                <button type="button" class="btn btn-primary btn-large js-find-match">
+                  <span class="btn-icon">🔍</span>
+                  מצא לי התאמה מושלמת
+                </button>
+              </div>
+            </section>
+
+            <!-- Results Panel -->
+            <section class="results-panel" id="parent-results">
+              <div class="results-header">
+                <div>
+                  <h3>מצאנו לכם התאמות! 🎉</h3>
+                  <p>מטפלים מומלצים בהתאם לקריטריונים שהזנתם</p>
+                </div>
+                <div class="results-filters">
+                  <button class="filter-btn active" data-filter="all">
+                    הכל <span class="filter-count">3</span>
+                  </button>
+                  <button class="filter-btn" data-filter="available">
+                    זמינים <span class="filter-count">2</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="results-list">
+                <!-- Result Card 1 -->
+                <article class="result-card" data-match-score="92">
+                  <div class="result-badge">
+                    <span class="badge-icon">⭐</span>
+                    <span>התאמה מעולה</span>
+                  </div>
+                  
+                  <div class="result-header">
+                    <div class="therapist-avatar">
+                      <span>נ</span>
+                    </div>
+                    <div class="therapist-info">
+                      <h4>נועה כהן</h4>
+                      <p class="therapist-title">קלינאית תקשורת מוסמכת</p>
+                      <div class="therapist-rating">
+                        <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+                        <span class="rating-text">4.8 (24 ביקורות)</span>
+                      </div>
+                    </div>
+                    <div class="match-score">
+                      <div class="score-circle">
+                        <svg width="60" height="60">
+                          <circle cx="30" cy="30" r="26" stroke="#e5e7eb" stroke-width="4" fill="none"/>
+                          <circle cx="30" cy="30" r="26" stroke="url(#score-gradient)" stroke-width="4" fill="none" 
+                                  stroke-dasharray="163" stroke-dashoffset="13" stroke-linecap="round" 
+                                  transform="rotate(-90 30 30)"/>
+                        </svg>
+                        <span class="score-number">92%</span>
+                      </div>
+                      <span class="score-label">התאמה</span>
+                    </div>
+                  </div>
+
+                  <div class="result-body">
+                    <div class="specialties">
+                      <span class="specialty-tag">עיכוב שפתי</span>
+                      <span class="specialty-tag">קשיי היגוי</span>
+                      <span class="specialty-tag">חינוך מיוחד</span>
+                    </div>
+
+                    <p class="therapist-bio">
+                      8 שנות ניסיון בעבודה עם ילדים בגילאי הגן והיסודי. מתמחה בעיכובי שפה, 
+                      קשיי היגוי ועבודה עם מסגרות חינוך מיוחד. שיתוף פעולה הדוק עם פסיכולוגים ויועצות.
+                    </p>
+
+                    <div class="therapist-details">
+                      <div class="detail-item">
+                        <span class="detail-icon">📍</span>
+                        <span>רחובות (1.5 ק"מ ממך)</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-icon">💰</span>
+                        <span>320 ₪ לפגישה</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-icon">⚡</span>
+                        <span class="detail-highlight">זמינה השבוע</span>
+                      </div>
+                    </div>
+
+                    <div class="match-reasons">
+                      <strong>למה המלצנו:</strong>
+                      <ul>
+                        <li>מתאים לגיל הילד/ה</li>
+                        <li>התמחות מדויקת בתחום</li>
+                        <li>קרובה גיאוגרפית</li>
+                        <li>זמינות מהירה</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="result-actions">
+                    <button class="btn btn-primary btn-book" data-therapist="נועה כהן">
+                      <span class="btn-icon">📅</span>
+                      קביעת תור
+                    </button>
+                    <button class="btn btn-secondary btn-details">
+                      פרטים נוספים
+                      <span class="btn-arrow">←</span>
+                    </button>
+                    <button class="btn btn-ghost btn-save">
+                      <span>💾</span>
+                      שמירה
+                    </button>
+                  </div>
+                </article>
+
+                <!-- Result Card 2 -->
+                <article class="result-card" data-match-score="87">
+                  <div class="result-badge result-badge-good">
+                    <span class="badge-icon">✓</span>
+                    <span>התאמה טובה</span>
+                  </div>
+                  
+                  <div class="result-header">
+                    <div class="therapist-avatar">
+                      <span>ר</span>
+                    </div>
+                    <div class="therapist-info">
+                      <h4>ד"ר רון לוי</h4>
+                      <p class="therapist-title">פסיכולוג התפתחותי</p>
+                      <div class="therapist-rating">
+                        <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+                        <span class="rating-text">4.9 (31 ביקורות)</span>
+                      </div>
+                    </div>
+                    <div class="match-score">
+                      <div class="score-circle">
+                        <svg width="60" height="60">
+                          <circle cx="30" cy="30" r="26" stroke="#e5e7eb" stroke-width="4" fill="none"/>
+                          <circle cx="30" cy="30" r="26" stroke="url(#score-gradient)" stroke-width="4" fill="none" 
+                                  stroke-dasharray="163" stroke-dashoffset="21" stroke-linecap="round" 
+                                  transform="rotate(-90 30 30)"/>
+                        </svg>
+                        <span class="score-number">87%</span>
+                      </div>
+                      <span class="score-label">התאמה</span>
+                    </div>
+                  </div>
+
+                  <div class="result-body">
+                    <div class="specialties">
+                      <span class="specialty-tag">חרדה חברתית</span>
+                      <span class="specialty-tag">ויסות רגשי</span>
+                      <span class="specialty-tag">הדרכת הורים</span>
+                    </div>
+
+                    <p class="therapist-bio">
+                      12 שנות ניסיון בטיפול בילדים ובני נוער. מתמחה בחרדות, ויסות רגשי והדרכת הורים. 
+                      שיתוף פעולה עם פסיכיאטרים ומסגרות חינוך.
+                    </p>
+
+                    <div class="therapist-details">
+                      <div class="detail-item">
+                        <span class="detail-icon">📍</span>
+                        <span>נס ציונה (4 ק"מ ממך)</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-icon">💰</span>
+                        <span>380 ₪ לפגישה</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <span>זמין בשבוע הבא</span>
+                      </div>
+                    </div>
+
+                    <div class="match-reasons">
+                      <strong>למה המלצנו:</strong>
+                      <ul>
+                        <li>ניסיון רב ורלוונטי</li>
+                        <li>דירוג גבוה מאוד</li>
+                        <li>מרחק סביר</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="result-actions">
+                    <button class="btn btn-primary btn-book" data-therapist="ד״ר רון לוי">
+                      <span class="btn-icon">📅</span>
+                      קביעת תור
+                    </button>
+                    <button class="btn btn-secondary btn-details">
+                      פרטים נוספים
+                      <span class="btn-arrow">←</span>
+                    </button>
+                    <button class="btn btn-ghost btn-save">
+                      <span>💾</span>
+                      שמירה
+                    </button>
+                  </div>
+                </article>
+
+                <!-- Result Card 3 -->
+                <article class="result-card" data-match-score="84">
+                  <div class="result-badge result-badge-good">
+                    <span class="badge-icon">✓</span>
+                    <span>התאמה טובה</span>
+                  </div>
+                  
+                  <div class="result-header">
+                    <div class="therapist-avatar">
+                      <span>ל</span>
+                    </div>
+                    <div class="therapist-info">
+                      <h4>לירון מזרחי</h4>
+                      <p class="therapist-title">מרפאה בעיסוק</p>
+                      <div class="therapist-rating">
+                        <span class="rating-stars">⭐⭐⭐⭐</span>
+                        <span class="rating-text">4.7 (18 ביקורות)</span>
+                      </div>
+                    </div>
+                    <div class="match-score">
+                      <div class="score-circle">
+                        <svg width="60" height="60">
+                          <circle cx="30" cy="30" r="26" stroke="#e5e7eb" stroke-width="4" fill="none"/>
+                          <circle cx="30" cy="30" r="26" stroke="url(#score-gradient)" stroke-width="4" fill="none" 
+                                  stroke-dasharray="163" stroke-dashoffset="26" stroke-linecap="round" 
+                                  transform="rotate(-90 30 30)"/>
+                        </svg>
+                        <span class="score-number">84%</span>
+                      </div>
+                      <span class="score-label">התאמה</span>
+                    </div>
+                  </div>
+
+                  <div class="result-body">
+                    <div class="specialties">
+                      <span class="specialty-tag">מוטוריקה עדינה</span>
+                      <span class="specialty-tag">גרפומוטוריקה</span>
+                      <span class="specialty-tag">כיתה א'</span>
+                    </div>
+
+                    <p class="therapist-bio">
+                      6 שנות ניסיון בהכנה לכיתה א' ומיומנויות אקדמיות. מתמחה במוטוריקה עדינה, 
+                      גרפומוטוריקה ועבודה צמודה עם מורות ויועצות.
+                    </p>
+
+                    <div class="therapist-details">
+                      <div class="detail-item">
+                        <span class="detail-icon">📍</span>
+                        <span>רחובות (2.2 ק"מ ממך)</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-icon">💰</span>
+                        <span>300 ₪ לפגישה</span>
+                      </div>
+                      <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <span>זמינה בשבועיים</span>
+                      </div>
+                    </div>
+
+                    <div class="match-reasons">
+                      <strong>למה המלצנו:</strong>
+                      <ul>
+                        <li>התמחות ספציפית רלוונטית</li>
+                        <li>מחיר תחרותי</li>
+                        <li>קרובה גיאוגרפית</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="result-actions">
+                    <button class="btn btn-primary btn-book" data-therapist="לירון מזרחי">
+                      <span class="btn-icon">📅</span>
+                      קביעת תור
+                    </button>
+                    <button class="btn btn-secondary btn-details">
+                      פרטים נוספים
+                      <span class="btn-arrow">←</span>
+                    </button>
+                    <button class="btn btn-ghost btn-save">
+                      <span>💾</span>
+                      שמירה
+                    </button>
+                  </div>
+                </article>
+              </div>
+
+              <!-- Next Steps Section -->
+              <div class="next-steps">
+                <div class="next-steps-header">
+                  <h4>מצאתם התאמה? מעולה! 🎉</h4>
+                  <p>עכשיו בואו נראה איך לממן את הטיפול</p>
+                </div>
+                
+                <div class="next-steps-cards">
+                  <div class="next-step-card">
+                    <div class="step-icon">💰</div>
+                    <h5>בדקו זכאות ביטוחית</h5>
+                    <p>העלו את הפוליסה שלכם ותקבלו ניתוח מפורט של הזכאות וההחזרים</p>
+                    <button class="btn btn-secondary btn-small" data-view="insurance">
+                      למודול FlowInsurance
+                      <span class="btn-arrow">←</span>
+                    </button>
+                  </div>
+
+                  <div class="next-step-card">
+                    <div class="step-icon">🔄</div>
+                    <h5>עדכנו קריטריונים</h5>
+                    <p>לא מרוצים מההתאמות? שנו את ההעדפות וקבלו המלצות חדשות</p>
+                    <button class="btn btn-secondary btn-small js-restart-parent">
+                      חזרה לתחילת התהליך
+                      <span class="btn-arrow">←</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="results-actions">
+                <button class="btn btn-ghost js-not-relevant">
+                  ההתאמות לא רלוונטיות לי
+                </button>
+              </div>
+
+              <div class="feedback-box" id="not-relevant-msg">
+                <span class="feedback-icon">🙏</span>
+                <div>
+                  <strong>תודה על המשוב!</strong>
+                  <p>
+                    בגרסה המלאה נוכל ללמוד מהמשוב הזה כדי לשפר את ההתאמה. 
+                    בינתיים, נסו לשנות קריטריונים או ליצור איתנו קשר לסיוע אישי.
+                  </p>
+                </div>
+              </div>
+            </section>
+          </form>
+        </div>
+      </section>
+
+      <!-- Therapist Flow (ממשיכים בקובץ הבא...) -->
+      <section id="therapist-flow" class="view">
+        <div class="flow-header">
+          <div class="flow-header-content">
+            <button class="back-btn js-back-home" data-view="landing">
+              <span>←</span> חזרה
+            </button>
+            <div>
+              <h2>הרשמת מטפל/ת ל-FlowMatch</h2>
+              <p>בניית פרופיל מקצועי וקבלת פניות איכותיות מהורים מתאימים</p>
+            </div>
+          </div>
+          <div class="flow-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" id="therapistProgress"></div>
+            </div>
+            <span class="progress-text" id="therapistProgressText">שלב 1 מתוך 4</span>
+          </div>
+        </div>
+
+        <div class="flow-layout">
+          <aside class="stepper">
+            <div class="stepper-item active" data-step="1">
+              <span class="step-number">1</span>
+              <span class="step-label">פרטים אישיים</span>
+            </div>
+            <div class="stepper-item" data-step="2">
+              <span class="step-number">2</span>
+              <span class="step-label">תחומי טיפול</span>
+            </div>
+            <div class="stepper-item" data-step="3">
+              <span class="step-number">3</span>
+              <span class="step-label">זמינות ומיקום</span>
+            </div>
+            <div class="stepper-item" data-step="4">
+              <span class="step-number">4</span>
+              <span class="step-label">עבודה עם מסגרות</span>
+            </div>
+          </aside>
+
+          <form class="flow-form" id="therapist-form">
+            <!-- Therapist steps similar structure to parent -->
+            <!-- כאן יהיו השלבים של המטפל - אשאיר את הלוגיקה הקיימת אבל עם העיצוב החדש -->
+            
+            <section class="step-panel active" data-step="1">
+              <h3>פרטי זיהוי בסיסיים</h3>
+              <p class="step-hint">נתחיל עם פרטים כלליים ומידע מקצועי</p>
+
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="t-full-name">
+                    שם מלא
+                    <span class="field-required">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    id="t-full-name"
+                    name="full_name" 
+                    required
+                    class="form-input"
+                    placeholder="שם פרטי ושם משפחה"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label for="t-email">
+                    דוא"ל ליצירת קשר
+                    <span class="field-required">*</span>
+                  </label>
+                  <input 
+                    type="email" 
+                    id="t-email"
+                    name="email" 
+                    required
+                    class="form-input"
+                    placeholder="example@email.com"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label for="t-phone">
+                    טלפון נייד
+                    <span class="field-required">*</span>
+                  </label>
+                  <input 
+                    type="tel" 
+                    id="t-phone"
+                    name="phone" 
+                    required
+                    class="form-input"
+                    placeholder="05X-XXXXXXX"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label for="t-experience">שנות ניסיון בטיפול</label>
+                  <select 
+                    id="t-experience"
+                    name="experience_years"
+                    class="form-input"
+                  >
+                    <option value="">בחרו</option>
+                    <option value="0-2">0–2 שנים</option>
+                    <option value="3-5">3–5 שנים</option>
+                    <option value="6-10">6–10 שנים</option>
+                    <option value="10+">10+ שנים</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="upload-area">
+                <label class="upload-label">
+                  <span class="label-text">תעודות / רישיונות מקצועיים</span>
+                  <span class="field-optional">(אופציונלי)</span>
+                </label>
+                <div class="upload-zone" id="therapist-upload-zone">
+                  <svg class="upload-icon" width="40" height="40" viewBox="0 0 24 24" fill="none">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4m14-7l-5-5m0 0L7 8m5-5v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <p class="upload-text">לחצו להעלאת קבצים</p>
+                  <input type="file" id="therapist-certs" name="certs" multiple accept=".pdf,.jpg,.jpeg,.png" hidden />
+                </div>
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-primary js-next-step" data-next="2">
+                  המשך
+                  <span class="btn-arrow">←</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- Similar structure for other therapist steps -->
+            <!-- ... (מקצר לצורך הדוגמה) -->
+
+            <div class="form-success" id="therapist-success">
+              <div class="success-icon">✅</div>
+              <h3>תודה! נרשמתם בהצלחה ל-FlowMatch</h3>
+              <p>
+                בגרסת ה-MVP הנתונים משמשים לבניית המערכת. בגרסה המלאה תוכלו לנהל פרופיל מלא,
+                לשלוט בפניות ולחבר את הפרופיל למודול הביטוח.
+              </p>
+              <div class="success-actions">
+                <button class="btn btn-primary js-back-home" data-view="landing">
+                  חזרה לדף הבית
+                </button>
+                <button class="btn btn-secondary" data-view="demo-center">
+                  ראו דמו של הדשבורד
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Insurance Module -->
+      <section id="insurance" class="view">
+        <div class="flow-header">
+          <div class="flow-header-content">
+            <button class="back-btn js-back-home" data-view="landing">
+              <span>←</span> חזרה
+            </button>
+            <div>
+              <h2>FlowInsurance – בדיקת ביטוח והחזרים</h2>
+              <p>מודול משלים: העלאת פוליסה, ניתוח זכאות ובדיקת התאמה ביטוחית</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="insurance-intro">
+          <div class="intro-icon">💡</div>
+          <div class="intro-content">
+            <h3>רגע, קודם התאמה!</h3>
+            <p>
+              <strong>הגישה שלנו שונה:</strong> לפני שבודקים ביטוח, חשוב למצוא את המטפל הנכון. 
+              אם עדיין לא התאמתם מטפל, מומלץ להתחיל שם. ואם כבר מצאתם – מעולה! 
+              עכשיו בואו נבין מה מגיע לכם מהביטוח.
+            </p>
+            <button class="btn btn-secondary btn-small js-start-parent">
+              <span class="btn-icon">🎯</span>
+              קודם למצוא מטפל
+            </button>
+          </div>
+        </div>
+
+        <div class="insurance-layout">
+          <article class="insurance-card">
+            <div class="card-header">
+              <div class="card-icon">🧾</div>
+              <div>
+                <h3>יש לי פוליסה</h3>
+                <p>רוצה להבין מה מגיע לי</p>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <p class="card-desc">
+                העלו את הפוליסה שלכם והמערכת תנתח את סעיפי הזכאות, תראה כמה השתמשתם 
+                וכמה נשאר – בשפה פשוטה.
+              </p>
+
+              <div class="consent-box">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="ai-consent" />
+                  <span class="checkbox-custom"></span>
+                  <span class="checkbox-text">
+                    אני מסכים/ה שהמערכת תנתח את תוכן הפוליסה באמצעות AI (דמו בלבד)
+                  </span>
+                </label>
+              </div>
+
+              <div class="upload-area">
+                <div class="upload-zone" id="policy-upload-zone">
+                  <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 12h6m-6 0a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v3a2 2 0 01-2 2m-6 0v5m6-5v5m-6 0H7a2 2 0 00-2 2v2m8-4h2a2 2 0 012 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                  <p class="upload-text">
+                    <strong>העלאת קובץ פוליסה</strong>
+                  </p>
+                  <p class="upload-hint">PDF או תמונה, עד 10MB</p>
+                  <input type="file" id="policy-file" accept=".pdf,.jpg,.jpeg,.png" hidden />
+                </div>
+                <p class="upload-status" id="policy-status">לא הועלה קובץ</p>
+              </div>
+
+              <button class="btn btn-primary btn-large" id="analyze-policy-btn">
+                <span class="btn-icon">🔍</span>
+                הפעל ניתוח פוליסה
+              </button>
+
+              <div class="analysis-results" id="policy-analysis-box">
+                <div class="results-header">
+                  <span class="results-icon">✅</span>
+                  <h4>תוצאות ניתוח (דמו)</h4>
+                </div>
+                
+                <div class="results-grid">
+                  <div class="result-item">
+                    <div class="result-label">כיסוי לטיפולים פרא-רפואיים</div>
+                    <div class="result-value">עד 80% מהעלות</div>
+                  </div>
+                  <div class="result-item">
+                    <div class="result-label">מקסימום מפגשים בשנה</div>
+                    <div class="result-value">30 מפגשים</div>
+                  </div>
+                  <div class="result-item">
+                    <div class="result-label">נוצלו עד כה</div>
+                    <div class="result-value highlight">8 / 30</div>
+                  </div>
+                  <div class="result-item">
+                    <div class="result-label">החזר ממוצע צפוי</div>
+                    <div class="result-value">220-260 ₪</div>
+                  </div>
+                </div>
+
+                <div class="requirements-box">
+                  <strong>מסמכים נדרשים להחזר:</strong>
+                  <ul>
+                    <li>קבלה מהמטפל</li>
+                    <li>דו"ח טיפולי</li>
+                    <li>סיכום רופא / מאבחן</li>
+                  </ul>
+                </div>
+
+                <div class="disclaimer">
+                  <span class="disclaimer-icon">ℹ️</span>
+                  <p>
+                    כל האמור הוא לצורך הדגמה בלבד ואינו מהווה ייעוץ ביטוחי או התחייבות להחזר בפועל.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="insurance-card">
+            <div class="card-header">
+              <div class="card-icon">📞</div>
+              <div>
+                <h3>אין לי פוליסה</h3>
+                <p>או שאני לא בטוח/ה מה יש לי</p>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <p class="card-desc">
+                השאירו פרטים ובגרסה המלאה נחבר אתכם לגורם מתאים שיבדוק עבורכם 
+                אפשרויות ביטוח – ללא התחייבות וללא לחץ.
+              </p>
+
+              <form id="no-policy-form" class="simple-form">
+                <div class="form-field">
+                  <label for="np-name">שם מלא</label>
+                  <input 
+                    type="text" 
+                    id="np-name"
+                    name="np_name" 
+                    required
+                    class="form-input"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label for="np-phone">טלפון</label>
+                  <input 
+                    type="tel" 
+                    id="np-phone"
+                    name="np_phone" 
+                    required
+                    class="form-input"
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label for="np-insurer">חברת ביטוח (אם ידוע)</label>
+                  <input 
+                    type="text" 
+                    id="np-insurer"
+                    name="np_insurer"
+                    class="form-input"
+                    placeholder="מגדל / הראל / כלל / לא בטוח..."
+                  />
+                </div>
+
+                <div class="form-field">
+                  <label for="np-notes">מה הייתם רוצים לבדוק?</label>
+                  <textarea
+                    id="np-notes"
+                    name="np_notes"
+                    rows="3"
+                    class="form-input"
+                    placeholder="למשל: האם יש לי החזרים לטיפולים, כמה, האם כדאי לעדכן פוליסה..."
+                  ></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">
+                  <span class="btn-icon">📤</span>
+                  שליחת בקשה לבדיקת התאמה
+                </button>
+              </form>
+
+              <div class="form-success" id="no-policy-success">
+                <div class="success-icon">✅</div>
+                <h4>הבקשה התקבלה!</h4>
+                <p>
+                  בגרסה המלאה נחזור אליכם עם הסבר מסודר על האפשרויות הביטוחיות שלכם,
+                  בשפה פשוטה וללא התחייבות.
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Demo Center -->
+      <section id="demo-center" class="view">
+        <div class="flow-header">
+          <div class="flow-header-content">
+            <button class="back-btn js-back-home" data-view="landing">
+              <span>←</span> חזרה
+            </button>
+            <div>
+              <h2>מסכי דמו – הדמיית המערכת המלאה</h2>
+              <p>הצצה למסכים המרכזיים שיהיו בגרסה המלאה</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-grid">
+          <article class="demo-card">
+            <div class="demo-header">
+              <span class="demo-icon">👤</span>
+              <h3>פרופיל מטפל מלא</h3>
+            </div>
+            <div class="demo-preview">
+              <div class="preview-content">
+                <div class="preview-therapist">
+                  <div class="preview-avatar">ד"ר</div>
+                  <div>
+                    <h4>ד"ר רון לוי</h4>
+                    <p>פסיכולוג התפתחותי • 12 שנות ניסיון</p>
+                  </div>
+                </div>
+                <div class="preview-tags">
+                  <span class="tag">חרדה חברתית</span>
+                  <span class="tag">ויסות רגשי</span>
+                  <span class="tag">הדרכת הורים</span>
+                </div>
+                <div class="preview-details">
+                  <p>📍 נס ציונה • 💰 380 ₪ • ⭐ 4.9</p>
+                </div>
+                <div class="preview-buttons">
+                  <button class="preview-btn preview-btn-primary">קביעת תור</button>
+                  <button class="preview-btn">שליחת הודעה</button>
+                </div>
+              </div>
+            </div>
+            <p class="demo-desc">
+              מסך מפורט המוצג להורה לאחר התאמה, כולל כל המידע הרלוונטי ואפשרויות פעולה.
+            </p>
+          </article>
+
+          <article class="demo-card">
+            <div class="demo-header">
+              <span class="demo-icon">🏠</span>
+              <h3>דשבורד משפחתי</h3>
+            </div>
+            <div class="demo-preview">
+              <div class="preview-content">
+                <div class="dashboard-header">
+                  <h4>המשפחה שלי</h4>
+                  <span class="badge">2 ילדים בטיפול</span>
+                </div>
+                <div class="child-card">
+                  <span class="child-icon">👦</span>
+                  <div>
+                    <strong>יואב</strong> • ריפוי בעיסוק
+                    <p>פגישה הבאה: 12/01 • החזר: ממתין</p>
+                  </div>
+                </div>
+                <div class="child-card">
+                  <span class="child-icon">👧</span>
+                  <div>
+                    <strong>מאיה</strong> • קלינאות תקשורת
+                    <p>פגישה הבאה: 15/01 • החזר: אושר</p>
+                  </div>
+                </div>
+                <div class="insurance-status">
+                  <p>💰 ניצלתם 40% מתקרת ההחזרים השנה</p>
+                </div>
+              </div>
+            </div>
+            <p class="demo-desc">
+              מסך עתידי לניהול כל הטיפולים, ההחזרים והפגישות במקום אחד.
+            </p>
+          </article>
+
+          <article class="demo-card">
+            <div class="demo-header">
+              <span class="demo-icon">📄</span>
+              <h3>טופס החזר ביטוח</h3>
+            </div>
+            <div class="demo-preview">
+              <div class="preview-content">
+                <div class="form-row">
+                  <span>טיפול:</span>
+                  <strong>ריפוי בעיסוק</strong>
+                </div>
+                <div class="form-row">
+                  <span>תאריך:</span>
+                  <strong>05/01/2025</strong>
+                </div>
+                <div class="form-row">
+                  <span>סכום:</span>
+                  <strong>320 ₪</strong>
+                </div>
+                <div class="documents-check">
+                  <p>✓ קבלה ✓ סיכום מטפל ✓ אבחון</p>
+                </div>
+                <div class="status-box">
+                  <span class="status-icon">⏳</span>
+                  <p>הבקשה הוגשה • זמן טיפול: 7 ימים</p>
+                </div>
+              </div>
+            </div>
+            <p class="demo-desc">
+              מסך שמרכז את כל הנתונים הדרושים להגשת בקשה להחזר בצורה פשוטה.
+            </p>
+          </article>
+
+          <article class="demo-card">
+            <div class="demo-header">
+              <span class="demo-icon">📊</span>
+              <h3>דשבורד מטפל</h3>
+            </div>
+            <div class="demo-preview">
+              <div class="preview-content">
+                <div class="stats-row">
+                  <div class="stat">
+                    <span class="stat-number">12</span>
+                    <span class="stat-label">פניות חדשות</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label">מטופלים פעילים</span>
+                  </div>
+                </div>
+                <div class="calendar-preview">
+                  <p>📅 השבוע הקרוב</p>
+                  <div class="appointment">א', 10:00 - יואב ל.</div>
+                  <div class="appointment">ג', 14:00 - מאיה כ.</div>
+                  <div class="appointment">ה', 16:00 - הדרכת הורים</div>
+                </div>
+              </div>
+            </div>
+            <p class="demo-desc">
+              מסך ניהול למטפלים: פניות, מטופלים, לוח שנה ודיווחים.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="brand-logo">
+            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+              <rect width="36" height="36" rx="10" fill="url(#footer-gradient)"/>
+              <path d="M12 18L16 22L24 14" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="footer-gradient" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#3d7bfd"/>
+                  <stop offset="1" stop-color="#22c1c3"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div>
+            <div class="footer-name">FlowMatch</div>
+            <div class="footer-tagline">קודם התאמה, אחר כך ביטוח</div>
+          </div>
+        </div>
+        
+        <div class="footer-note">
+          <p>
+            <strong>MVP ראשוני</strong> • התוכן להדגמה בלבד ואינו מהווה ייעוץ רפואי או ביטוחי
+          </p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- SVG Definitions -->
+  <svg width="0" height="0" style="position: absolute;">
+    <defs>
+      <linearGradient id="score-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3d7bfd"/>
+        <stop offset="100%" stop-color="#22c1c3"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <script src="script.js"></script>
+</body>
+</html>
