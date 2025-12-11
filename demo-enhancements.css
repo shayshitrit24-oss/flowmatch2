@@ -1,0 +1,596 @@
+/* ===========================================
+   Demo Screens Enhancements
+   =========================================== */
+
+/* Demo Menu */
+.demo-menu {
+  display: flex;
+  gap: 1rem;
+  padding: 2rem;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+
+.demo-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.demo-menu-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.demo-menu-btn.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+.demo-menu-icon {
+  font-size: 1.25rem;
+}
+
+/* Demo Screen Container */
+.demo-screen {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.demo-screen.active {
+  display: block;
+}
+
+.demo-screen-content {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+/* Profile Page Styles */
+.profile-header {
+  position: relative;
+  margin: -2rem -2rem 2rem;
+}
+
+.profile-cover {
+  height: 200px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.profile-main {
+  padding: 0 2rem 2rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 2rem;
+  align-items: start;
+}
+
+.profile-avatar-large {
+  width: 120px;
+  height: 120px;
+  margin-top: -60px;
+  border: 5px solid white;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.profile-avatar-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-info h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.profile-title {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-icon {
+  font-size: 1.25rem;
+}
+
+.stat-value {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 200px;
+}
+
+.profile-content {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.profile-section {
+  margin-bottom: 2rem;
+}
+
+.profile-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.tags-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.education-list,
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.education-item,
+.review-item {
+  padding: 1rem;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--primary);
+}
+
+.education-item {
+  display: flex;
+  gap: 1rem;
+  align-items: start;
+}
+
+.education-icon {
+  font-size: 2rem;
+}
+
+.review-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.review-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.review-rating {
+  color: #fbbf24;
+}
+
+.review-date {
+  margin-inline-start: auto;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.review-text {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Sidebar */
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-card {
+  background: var(--surface);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.sidebar-card h4 {
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.contact-info,
+.pricing-info,
+.hours-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contact-item,
+.price-item,
+.hours-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.contact-item:last-child,
+.price-item:last-child,
+.hours-item:last-child {
+  border-bottom: none;
+}
+
+.contact-icon {
+  margin-inline-end: 0.5rem;
+}
+
+.pricing-note {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.meeting-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.meeting-badge {
+  padding: 0.5rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+}
+
+/* Dashboard Styles */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  gap: 1rem;
+  align-items: start;
+  transition: all 0.2s;
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.stat-icon-bg {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.stat-icon-blue {
+  background: linear-gradient(135deg, #3d7bfd 0%, #5b8fff 100%);
+  color: white;
+}
+
+.stat-icon-green {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  color: white;
+}
+
+.stat-icon-purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  color: white;
+}
+
+.stat-icon-orange {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  color: white;
+}
+
+.stat-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.stat-change {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.stat-change.positive {
+  color: #10b981;
+}
+
+/* Children & Treatment Cards */
+.children-section {
+  margin-bottom: 2rem;
+}
+
+.child-card-large {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+}
+
+.child-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.child-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.child-info {
+  flex: 1;
+}
+
+.child-info h4 {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.status-badge {
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.child-treatments h5,
+.child-insurance h5 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.treatment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.treatment-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.treatment-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.treatment-details {
+  flex: 1;
+}
+
+.treatment-details strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.treatment-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+.next-session {
+  font-size: 0.875rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Insurance Summary */
+.insurance-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.insurance-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.insurance-item:last-child {
+  border-bottom: none;
+}
+
+.insurance-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.insurance-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.insurance-value.pending {
+  color: #f59e0b;
+}
+
+.progress-inline {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  max-width: 300px;
+}
+
+.progress-bar-inline {
+  flex: 1;
+  height: 8px;
+  background: var(--surface);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill-inline {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 999px;
+  transition: width 0.3s;
+}
+
+.progress-text-inline {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .profile-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .profile-main {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .profile-avatar-large {
+    margin: -60px auto 0;
+  }
+  
+  .profile-stats {
+    justify-content: center;
+  }
+  
+  .profile-actions {
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .demo-menu {
+    flex-direction: column;
+  }
+  
+  .demo-menu-btn {
+    width: 100%;
+  }
+  
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+}
