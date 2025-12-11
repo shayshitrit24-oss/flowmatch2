@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="demo-enhancements.css" />
 </head>
 <body>
   <!-- Loading Screen -->
@@ -111,8 +112,9 @@
             <div class="hero-note">
               <div class="note-icon">💡</div>
               <p>
-                <strong>הגישה שלנו:</strong> קודם תנו להם את מה שהם <em>רוצים</em> (התאמה מדויקת) – 
-                אחר כך תספקו את מה שהם <em>צריכים</em> (כיסוי ביטוחי).
+                <strong>זה מה שאנחנו עושים הכי טוב:</strong> מתאימים בין מטפלים למטופלים בצורה חכמה ומדויקת.
+                <br/>
+                <span class="highlight">וכבונוס?</span> אם תצטרכו סיוע בהחזרים ביטוחיים – אנחנו כאן גם בשבילכם! 🎁
               </p>
             </div>
           </div>
@@ -208,7 +210,7 @@
               <div class="connector-line"></div>
               <div class="connector-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M5 12h14m0 0l-6-6m6 6l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M19 12H5m0 0l6 6m-6-6l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
               <div class="connector-text">אחרי ההתאמה</div>
@@ -1116,8 +1118,175 @@
               </div>
             </section>
 
-            <!-- Similar structure for other therapist steps -->
-            <!-- ... (מקצר לצורך הדוגמה) -->
+            <!-- שלב 2: תחומי טיפול -->
+            <section class="step-panel" data-step="2">
+              <h3>תחומי טיפול ותתי-התמחויות</h3>
+              <p class="step-hint">ספרו לנו במה אתם מתמחים</p>
+
+              <div class="form-field">
+                <label>תחומי טיפול עיקריים <span class="field-required">*</span></label>
+                <div class="chip-group" data-name="therapist_main_fields">
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🗣️</span>
+                    <span>קלינאות תקשורת</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">✋</span>
+                    <span>ריפוי בעיסוק</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🏃</span>
+                    <span>פיזיותרפיה</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">💭</span>
+                    <span>טיפול רגשי</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🧠</span>
+                    <span>פסיכולוגיה</span>
+                  </button>
+                </div>
+                <input type="hidden" name="therapist_main_fields" />
+                <div class="field-error" data-field="therapist_main_fields"></div>
+              </div>
+
+              <div class="form-field">
+                <label>תתי-התמחויות (ניתן לבחור כמה)</label>
+                <div class="chip-group" data-name="therapist_sub_fields">
+                  <button type="button" class="chip">ויסות חושי</button>
+                  <button type="button" class="chip">עיכוב שפתי</button>
+                  <button type="button" class="chip">מוטוריקה עדינה</button>
+                  <button type="button" class="chip">טיפול במשחק</button>
+                  <button type="button" class="chip">חרדה חברתית</button>
+                  <button type="button" class="chip">חינוך מיוחד</button>
+                  <button type="button" class="chip">שיקום פגיעות</button>
+                  <button type="button" class="chip">עבודה עם ASD</button>
+                  <button type="button" class="chip">פיזיותרפיה תינוקות</button>
+                </div>
+                <input type="hidden" name="therapist_sub_fields" />
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-secondary js-prev-step" data-prev="1" data-flow="therapist">
+                  <span class="btn-arrow">→</span>
+                  חזרה
+                </button>
+                <button type="button" class="btn btn-primary js-next-step" data-next="3" data-flow="therapist">
+                  המשך
+                  <span class="btn-arrow">←</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- שלב 3: זמינות ומיקום -->
+            <section class="step-panel" data-step="3">
+              <h3>זמינות, מיקום ואופן מפגש</h3>
+              <p class="step-hint">איפה ומתי אתם זמינים לקבל מטופלים</p>
+
+              <div class="form-grid">
+                <div class="form-field">
+                  <label for="t-areas">אזורי פעילות <span class="field-required">*</span></label>
+                  <input 
+                    type="text" 
+                    id="t-areas" 
+                    name="areas" 
+                    placeholder="למשל: תל אביב, רמת גן, אונליין" 
+                    required
+                    class="form-input" 
+                    data-autocomplete="city" 
+                  />
+                  <div class="field-error" data-field="areas"></div>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label>סוגי מפגש</label>
+                <div class="chip-group" data-name="therapist_meeting_types">
+                  <button type="button" class="chip">קליניקה</button>
+                  <button type="button" class="chip">הגעה לבית</button>
+                  <button type="button" class="chip">במסגרת גן/בית ספר</button>
+                  <button type="button" class="chip">אונליין</button>
+                </div>
+                <input type="hidden" name="therapist_meeting_types" />
+              </div>
+
+              <div class="form-field">
+                <label>זמינות כללית</label>
+                <div class="chip-group" data-name="therapist_availability">
+                  <button type="button" class="chip">בוקר</button>
+                  <button type="button" class="chip">צהריים</button>
+                  <button type="button" class="chip">אחר הצהריים</button>
+                  <button type="button" class="chip">ערב</button>
+                  <button type="button" class="chip">גמיש לפי תאום</button>
+                </div>
+                <input type="hidden" name="therapist_availability" />
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-secondary js-prev-step" data-prev="2" data-flow="therapist">
+                  <span class="btn-arrow">→</span>
+                  חזרה
+                </button>
+                <button type="button" class="btn btn-primary js-next-step" data-next="4" data-flow="therapist">
+                  המשך
+                  <span class="btn-arrow">←</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- שלב 4: עבודה עם מסגרות -->
+            <section class="step-panel" data-step="4">
+              <h3>עבודה עם גופים, עמותות ומסגרות</h3>
+              <p class="step-hint">מידע נוסף שיעזור לנו להתאים פניות מתאימות</p>
+
+              <div class="form-field">
+                <label for="t-orgs">עבודה עם גופים / עמותות</label>
+                <textarea 
+                  id="t-orgs" 
+                  name="orgs" 
+                  rows="3" 
+                  placeholder="למשל: מכבי זהב, עמותת על״ה, קופות חולים..." 
+                  class="form-input"
+                ></textarea>
+                <p class="field-hint">רשמו ארגונים שאיתם אתם עובדים באופן קבוע</p>
+              </div>
+
+              <div class="form-field">
+                <label for="t-special-ed">ניסיון עם מסגרות חינוך מיוחדות</label>
+                <textarea 
+                  id="t-special-ed" 
+                  name="special_education" 
+                  rows="3" 
+                  placeholder="כיתות תקשורת, כיתות קטנות, מרכזי חינוך מיוחד..." 
+                  class="form-input"
+                ></textarea>
+              </div>
+
+              <div class="form-field">
+                <label>סוגי מקרים שאתם מעדיפים לטפל בהם</label>
+                <div class="chip-group" data-name="therapist_lead_types">
+                  <button type="button" class="chip">ילדים עם עיכוב התפתחותי</button>
+                  <button type="button" class="chip">ASD</button>
+                  <button type="button" class="chip">ליקויי למידה</button>
+                  <button type="button" class="chip">קשיים רגשיים</button>
+                  <button type="button" class="chip">שיקום מוטורי</button>
+                  <button type="button" class="chip">הכל</button>
+                </div>
+                <input type="hidden" name="therapist_lead_types" />
+              </div>
+
+              <div class="step-actions">
+                <button type="button" class="btn btn-secondary js-prev-step" data-prev="3" data-flow="therapist">
+                  <span class="btn-arrow">→</span>
+                  חזרה
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  <span class="btn-icon">✅</span>
+                  סיום הרשמה
+                </button>
+              </div>
+            </section>
 
             <div class="form-success" id="therapist-success">
               <div class="success-icon">✅</div>
@@ -1531,5 +1700,6 @@
   </svg>
 
   <script src="script.js"></script>
+  <script src="demo-enhancements.js"></script>
 </body>
 </html>
