@@ -668,6 +668,8 @@ function initializeTherapistFlow() {
   
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    e.stopPropagation();
+    console.log('Therapist form submitted!');
     // For MVP - skip validation and show success
     showTherapistSuccess();
   });
@@ -1395,12 +1397,28 @@ function initializeResultModals() {
   });
   
   // Close modals
-  document.getElementById('close-booking-modal')?.addEventListener('click', closeBookingModal);
-  document.getElementById('close-details-modal')?.addEventListener('click', closeDetailsModal);
+  document.getElementById('close-booking-modal')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    closeBookingModal();
+  });
+  document.getElementById('close-details-modal')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    closeDetailsModal();
+  });
   
   // Back to results buttons
-  document.getElementById('back-to-results')?.addEventListener('click', closeDetailsModal);
-  document.getElementById('back-to-results-from-booking')?.addEventListener('click', closeBookingModal);
+  document.getElementById('back-to-results')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    closeDetailsModal();
+  });
+  document.getElementById('back-to-results-from-booking')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    closeBookingModal();
+  });
   
   // Close on backdrop click
   document.querySelectorAll('.modal').forEach(modal => {
@@ -1516,9 +1534,13 @@ function showBookingSummary(therapist, day, time) {
   // Save booking button
   const saveBtn = summary.querySelector('.btn-save-booking');
   if (saveBtn) {
-    saveBtn.onclick = () => {
+    // Remove old listeners
+    saveBtn.onclick = null;
+    saveBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       showBookingSuccess(therapist, day, time);
-    };
+    });
   }
 }
 
