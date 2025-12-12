@@ -227,6 +227,37 @@ function setupStepNavigation(flowType, form) {
       goToStep(flowType, prevStep);
     });
   });
+  
+  // Make stepper items clickable
+  const stepperItems = form.closest('.view').querySelectorAll('.stepper-item[data-step]');
+  stepperItems.forEach(item => {
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', () => {
+      const targetStep = parseInt(item.getAttribute('data-step'));
+      const currentStep = AppState[`${flowType}Data`].step;
+      
+      // Allow going back to previous steps, but validate before going forward
+      if (targetStep < currentStep) {
+        goToStep(flowType, targetStep);
+      } else if (targetStep === currentStep) {
+        // Already on this step, do nothing
+        return;
+      } else {
+        // Going forward - validate all steps in between
+        let canProceed = true;
+        for (let step = currentStep; step < targetStep; step++) {
+          if (!validateCurrentStep(flowType, step)) {
+            canProceed = false;
+            showToast('נא למלא את כל השדות הנדרשים', 'warning');
+            break;
+          }
+        }
+        if (canProceed) {
+          goToStep(flowType, targetStep);
+        }
+      }
+    });
+  });
 }
 
 function goToStep(flowType, stepNumber) {
@@ -650,6 +681,7 @@ function initializeTherapistFlow() {
   setupStepNavigation('therapist', form);
   setupChips(form);
   setupFileUpload('therapist');
+  setupTherapistSubSpecialties(form); // Add dynamic sub-specializations
   
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -657,6 +689,121 @@ function initializeTherapistFlow() {
   });
   
   updateTherapistProgress();
+}
+
+function setupTherapistSubSpecialties(form) {
+  const mainFieldsGroup = form.querySelector('.chip-group[data-name="therapist_main_fields"]');
+  const subFieldsGroup = form.querySelector('.chip-group[data-name="therapist_sub_fields"]');
+  
+  if (!mainFieldsGroup || !subFieldsGroup) return;
+  
+  // Map of main fields to sub-specializations
+  const subSpecialtiesMap = {
+    'קלינאות תקשורת': [
+      'עיכוב שפתי',
+      'גמגום',
+      'קשיי היגוי',
+      'עיבוד שמיעתי',
+      'תקשורת חברתית',
+      'הזנה ואכילה',
+      'תקשורת תומכת וחליפית (AAC)'
+    ],
+    'ריפוי בעיסוק': [
+      'ויסות חושי',
+      'מוטוריקה עדינה',
+      'מוטוריקה גסה',
+      'גרפומוטוריקה',
+      'תפקודי יום-יום (ADL)',
+      'עבודה עם ASD',
+      'מיומנויות כיתה א׳'
+    ],
+    'פיזיותרפיה': [
+      'פיזיותרפיה תינוקות',
+      'פיזיותרפיה נשימתית',
+      'פציעות ספורט ילדים',
+      'שיקום לאחר פגיעה',
+      'טיפול ביציבה'
+    ],
+    'טיפול רגשי': [
+      'טיפול במשחק',
+      'טיפול באמצעות אמנות',
+      'ויסות רגשי',
+      'חרדות ילדים',
+      'טיפול דיאדי הורה-ילד'
+    ],
+    'פסיכולוגיה': [
+      'פסיכולוגיה התפתחותית',
+      'פסיכולוגיה חינוכית',
+      'CBT לילדים',
+      'טיפול משפחתי',
+      'טיפול בנוער עם חרדה'
+    ]
+  };
+  
+  const mainChips = mainFieldsGroup.querySelectorAll('.chip');
+  
+  mainChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      // Wait a bit for the chip to toggle its active state
+      setTimeout(() => {
+        updateTherapistSubSpecialties(mainFieldsGroup, subFieldsGroup, subSpecialtiesMap);
+      }, 50);
+    });
+  });
+}
+
+function updateTherapistSubSpecialties(mainFieldsGroup, subFieldsGroup, subSpecialtiesMap) {
+  // Get active main fields
+  const activeMainChips = mainFieldsGroup.querySelectorAll('.chip.active');
+  const selectedFields = Array.from(activeMainChips).map(chip => {
+    return chip.textContent.trim();
+  });
+  
+  // Collect all relevant sub-specializations
+  let allSubSpecialties = [];
+  selectedFields.forEach(field => {
+    if (subSpecialtiesMap[field]) {
+      allSubSpecialties = allSubSpecialties.concat(subSpecialtiesMap[field]);
+    }
+  });
+  
+  // Remove duplicates
+  allSubSpecialties = [...new Set(allSubSpecialties)];
+  
+  // Clear existing sub-specialty chips
+  subFieldsGroup.innerHTML = '';
+  
+  // Create new chips for sub-specializations
+  if (allSubSpecialties.length > 0) {
+    allSubSpecialties.forEach(subSpec => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'chip';
+      chip.textContent = subSpec;
+      
+      // Add click handler for the new chip
+      chip.addEventListener('click', (e) => {
+        e.preventDefault();
+        chip.classList.toggle('active');
+        
+        // Update hidden input
+        const activeChips = subFieldsGroup.querySelectorAll('.chip.active');
+        const values = Array.from(activeChips).map(c => c.textContent.trim());
+        const hiddenInput = subFieldsGroup.parentElement.querySelector('input[name="therapist_sub_fields"]');
+        if (hiddenInput) {
+          hiddenInput.value = values.join('|');
+        }
+      });
+      
+      subFieldsGroup.appendChild(chip);
+    });
+    
+    // Show the sub-fields container
+    subFieldsGroup.parentElement.style.display = 'block';
+  } else {
+    // Hide if no main field selected
+    subFieldsGroup.parentElement.style.display = 'none';
+  }
 }
 
 function updateTherapistProgress() {
