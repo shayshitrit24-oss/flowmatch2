@@ -97,6 +97,7 @@ function initializeNavigation() {
   const startParentButtons = document.querySelectorAll('.js-start-parent');
   const startTherapistButtons = document.querySelectorAll('.js-start-therapist');
   const backHomeButtons = document.querySelectorAll('.js-back-home');
+  const goToParentStep1Buttons = document.querySelectorAll('.js-go-to-parent-step1');
 
   // Navigation buttons
   navButtons.forEach(btn => {
@@ -114,6 +115,20 @@ function initializeNavigation() {
   // Start therapist flow
   startTherapistButtons.forEach(btn => {
     btn.addEventListener('click', () => showView('therapist-flow'));
+  });
+
+  // Go to parent step 1 (child details)
+  goToParentStep1Buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      showView('parent-flow');
+      // Navigate to step 1
+      setTimeout(() => {
+        const form = document.getElementById('parent-form');
+        if (form) {
+          navigateToStep('parent', 1, form);
+        }
+      }, 100);
+    });
   });
 
   // Back to home
@@ -586,6 +601,8 @@ function showParentResults() {
   // Simulate loading
   setTimeout(() => {
     animateResults();
+    // Initialize modal buttons after results are shown
+    initializeResultModals();
   }, 300);
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -609,47 +626,9 @@ function animateResults() {
 }
 
 function setupResultCards() {
-  const resultsPanel = document.getElementById('parent-results');
-  if (!resultsPanel) return;
-  
-  // Book buttons
-  const bookButtons = resultsPanel.querySelectorAll('.btn-book');
-  bookButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const therapistName = btn.getAttribute('data-therapist');
-      showToast(`שולח בקשת תור אצל ${therapistName}... ✅`, 'success');
-      
-      setTimeout(() => {
-        showToast('התור נקבע בהצלחה! נשלח אישור במייל', 'success');
-      }, 2000);
-    });
-  });
-  
-  // Details buttons
-  const detailsButtons = resultsPanel.querySelectorAll('.btn-details');
-  detailsButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const card = btn.closest('.result-card');
-      const matchReasons = card.querySelector('.match-reasons');
-      
-      if (matchReasons) {
-        const isHidden = matchReasons.style.display === 'none';
-        matchReasons.style.display = isHidden ? 'block' : 'none';
-        btn.textContent = isHidden ? 'הסתר פרטים' : 'פרטים נוספים';
-      }
-    });
-  });
-  
-  // Save buttons
-  const saveButtons = resultsPanel.querySelectorAll('.btn-save');
-  saveButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      btn.classList.toggle('saved');
-      const isSaved = btn.classList.contains('saved');
-      btn.innerHTML = isSaved ? '<span>💚</span> נשמר' : '<span>💾</span> שמירה';
-      showToast(isSaved ? 'נשמר להמשך' : 'הוסר מהשמורים', 'info');
-    });
-  });
+  // This function now only handles initial setup
+  // Modal buttons are handled by initializeResultModals()
+  console.log('Result cards setup complete');
 }
 
 function resetParentForm() {
@@ -689,6 +668,7 @@ function initializeTherapistFlow() {
   
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    // For MVP - skip validation and show success
     showTherapistSuccess();
   });
   
@@ -1396,7 +1376,9 @@ function initializeResultModals() {
   
   // Book appointment buttons
   bookButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       const therapistName = btn.getAttribute('data-therapist');
       openBookingModal(therapistName);
     });
@@ -1404,7 +1386,9 @@ function initializeResultModals() {
   
   // Details buttons
   detailsButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       const therapistName = btn.getAttribute('data-therapist');
       openDetailsModal(therapistName);
     });
@@ -1414,11 +1398,16 @@ function initializeResultModals() {
   document.getElementById('close-booking-modal')?.addEventListener('click', closeBookingModal);
   document.getElementById('close-details-modal')?.addEventListener('click', closeDetailsModal);
   
+  // Back to results buttons
+  document.getElementById('back-to-results')?.addEventListener('click', closeDetailsModal);
+  document.getElementById('back-to-results-from-booking')?.addEventListener('click', closeBookingModal);
+  
   // Close on backdrop click
   document.querySelectorAll('.modal').forEach(modal => {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) {
         modal.classList.remove('active');
+        resetBookingModal();
       }
     });
   });
@@ -1440,6 +1429,22 @@ function openBookingModal(therapistName) {
 function closeBookingModal() {
   const modal = document.getElementById('booking-modal');
   if (modal) modal.classList.remove('active');
+  resetBookingModal();
+}
+
+function resetBookingModal() {
+  const calendarView = document.getElementById('booking-calendar-view');
+  const successView = document.getElementById('booking-success-view');
+  const summary = document.getElementById('booking-summary');
+  
+  if (calendarView) calendarView.style.display = 'block';
+  if (successView) successView.style.display = 'none';
+  if (summary) summary.style.display = 'none';
+  
+  // Deselect all slots
+  document.querySelectorAll('.booking-slot.selected').forEach(slot => {
+    slot.classList.remove('selected');
+  });
 }
 
 function generateBookingCalendar(therapistName) {
@@ -1508,12 +1513,57 @@ function showBookingSummary(therapist, day, time) {
   
   summary.style.display = 'block';
   
-  // Confirm booking button
-  const confirmBtn = summary.querySelector('.btn-confirm-booking');
-  if (confirmBtn) {
-    confirmBtn.onclick = () => {
-      showToast(`התור נקבע בהצלחה! יום ${day} בשעה ${time} 🎉`, 'success');
+  // Save booking button
+  const saveBtn = summary.querySelector('.btn-save-booking');
+  if (saveBtn) {
+    saveBtn.onclick = () => {
+      showBookingSuccess(therapist, day, time);
+    };
+  }
+}
+
+function showBookingSuccess(therapist, day, time) {
+  const calendarView = document.getElementById('booking-calendar-view');
+  const successView = document.getElementById('booking-success-view');
+  const successTherapistName = document.getElementById('success-therapist-name');
+  const successDateTime = document.getElementById('success-date-time');
+  const contactBtn = document.getElementById('contact-therapist-btn');
+  const backBtn = document.getElementById('back-to-results-from-booking');
+  
+  if (!successView) return;
+  
+  // Hide calendar, show success
+  calendarView.style.display = 'none';
+  successView.style.display = 'block';
+  
+  // Fill in details
+  successTherapistName.textContent = therapist;
+  successDateTime.textContent = `יום ${day} בשעה ${time}`;
+  
+  // Mock phone numbers for demo
+  const therapistPhones = {
+    'נועה כהן': '052-1234567',
+    'ד״ר רון לוי': '054-7654321',
+    'לירון מזרחי': '053-9876543'
+  };
+  
+  const phone = therapistPhones[therapist] || '050-0000000';
+  
+  // Contact button
+  if (contactBtn) {
+    contactBtn.href = `tel:${phone}`;
+    contactBtn.onclick = (e) => {
+      showToast(`מתקשר ל-${therapist} - ${phone}`, 'info');
+    };
+  }
+  
+  // Back to results button
+  if (backBtn) {
+    backBtn.onclick = () => {
       closeBookingModal();
+      // Reset views for next time
+      calendarView.style.display = 'block';
+      successView.style.display = 'none';
     };
   }
 }
