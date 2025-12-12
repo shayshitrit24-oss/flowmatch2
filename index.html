@@ -1223,6 +1223,27 @@
                 <input type="hidden" name="therapist_availability" />
               </div>
 
+              <div class="form-field">
+                <label>מצב עומס / זמינות לקבלת פניות חדשות</label>
+                <div class="workload-selector">
+                  <label class="workload-option workload-available">
+                    <input type="radio" name="therapist_workload" value="available" checked />
+                    <span class="workload-indicator">🟢</span>
+                    <span class="workload-text">פנוי מאוד</span>
+                  </label>
+                  <label class="workload-option workload-moderate">
+                    <input type="radio" name="therapist_workload" value="moderate" />
+                    <span class="workload-indicator">🟡</span>
+                    <span class="workload-text">עמוס בינוני</span>
+                  </label>
+                  <label class="workload-option workload-busy">
+                    <input type="radio" name="therapist_workload" value="busy" />
+                    <span class="workload-indicator">🔴</span>
+                    <span class="workload-text">עמוס - אין מקום</span>
+                  </label>
+                </div>
+              </div>
+
               <div class="step-actions">
                 <button type="button" class="btn btn-secondary js-prev-step" data-prev="2" data-flow="therapist">
                   <span class="btn-arrow">→</span>
@@ -1241,26 +1262,71 @@
               <p class="step-hint">מידע נוסף שיעזור לנו להתאים פניות מתאימות</p>
 
               <div class="form-field">
-                <label for="t-orgs">עבודה עם גופים / עמותות</label>
+                <label for="t-orgs-combined">עבודה עם גופים ומסגרות</label>
                 <textarea 
-                  id="t-orgs" 
-                  name="orgs" 
-                  rows="3" 
-                  placeholder="למשל: מכבי זהב, עמותת על״ה, קופות חולים..." 
+                  id="t-orgs-combined" 
+                  name="orgs_and_frameworks" 
+                  rows="4" 
+                  placeholder="למשל: מכבי זהב, עמותת על״ה, כיתות תקשורת, מרכזי חינוך מיוחד..." 
                   class="form-input"
                 ></textarea>
-                <p class="field-hint">רשמו ארגונים שאיתם אתם עובדים באופן קבוע</p>
+                <p class="field-hint">רשמו ארגונים ומסגרות שאיתם אתם עובדים באופן קבוע</p>
               </div>
 
               <div class="form-field">
-                <label for="t-special-ed">ניסיון עם מסגרות חינוך מיוחדות</label>
-                <textarea 
-                  id="t-special-ed" 
-                  name="special_education" 
-                  rows="3" 
-                  placeholder="כיתות תקשורת, כיתות קטנות, מרכזי חינוך מיוחד..." 
-                  class="form-input"
-                ></textarea>
+                <label>פרטים נוספים</label>
+                <p class="field-hint">בחרו פרטים שיעזרו במציאת ההתאמה הטובה ביותר</p>
+                <div class="chip-group" data-name="therapist_additional_details">
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🚗</span>
+                    <span>חנייה זמינה</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">♿</span>
+                    <span>נגיש לכיסא גלגלים</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🕌</span>
+                    <span>מותאם לאוכלוסייה דתית</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">👶</span>
+                    <span>משחקייה לילדים</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🪑</span>
+                    <span>חדר המתנה נוח</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🚪</span>
+                    <span>כניסה נפרדת</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🏢</span>
+                    <span>קומת קרקע</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🌳</span>
+                    <span>סביבה שקטה</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">💳</span>
+                    <span>תשלום באשראי</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">📱</span>
+                    <span>תקשורת בוואטסאפ</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🏠</span>
+                    <span>אווירה ביתית</span>
+                  </button>
+                  <button type="button" class="chip">
+                    <span class="chip-icon">🎨</span>
+                    <span>חומרים וציוד מקצועי</span>
+                  </button>
+                </div>
+                <input type="hidden" name="therapist_additional_details" />
               </div>
 
               <div class="form-field">
@@ -1290,11 +1356,16 @@
 
             <div class="form-success" id="therapist-success">
               <div class="success-icon">✅</div>
-              <h3>תודה! נרשמתם בהצלחה ל-FlowMatch</h3>
+              <h3>תודה רבה! ההרשמה הושלמה בהצלחה</h3>
               <p>
-                בגרסת ה-MVP הנתונים משמשים לבניית המערכת. בגרסה המלאה תוכלו לנהל פרופיל מלא,
-                לשלוט בפניות ולחבר את הפרופיל למודול הביטוח.
+                פרופיל המטפל שלכם נוצר ב-FlowMatch. 
+                <strong>בגרסה המלאה</strong> תוכלו לנהל פרופיל מלא, לקבל פניות מהורים מתאימים,
+                לנהל יומן פגישות ולחבר את הפרופיל למודול הביטוח לטיפול בהחזרים.
               </p>
+              <div class="success-info">
+                <p>📧 <strong>קיבלתם מייל אישור</strong> לכתובת שהזנתם</p>
+                <p>🎯 <strong>השלב הבא:</strong> צוות FlowMatch ייצור עמכם קשר תוך 48 שעות</p>
+              </div>
               <div class="success-actions">
                 <button class="btn btn-primary js-back-home" data-view="landing">
                   חזרה לדף הבית
