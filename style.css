@@ -408,16 +408,17 @@ body {
 .cta-btn {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 24px;
+  gap: 16px;
+  padding: 24px 32px;
   border: none;
   border-radius: var(--radius-lg);
   font-family: var(--font-primary);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-base);
   box-shadow: var(--shadow-md);
+  min-height: 90px;
 }
 
 .cta-primary {
@@ -443,7 +444,7 @@ body {
 }
 
 .btn-icon {
-  font-size: 24px;
+  font-size: 32px;
 }
 
 .btn-text {
