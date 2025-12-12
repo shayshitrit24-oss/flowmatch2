@@ -170,6 +170,9 @@ function initializeParentFlow() {
   // File upload
   setupFileUpload('parent');
   
+  // Result modals (booking & details)
+  initializeResultModals();
+  
   // Find match button
   const findMatchBtn = form.querySelector('.js-find-match');
   if (findMatchBtn) {
@@ -682,6 +685,7 @@ function initializeTherapistFlow() {
   setupChips(form);
   setupFileUpload('therapist');
   setupTherapistSubSpecialties(form); // Add dynamic sub-specializations
+  initializeScheduleManager(); // Add weekly schedule manager
   
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -692,117 +696,216 @@ function initializeTherapistFlow() {
 }
 
 function setupTherapistSubSpecialties(form) {
-  const mainFieldsGroup = form.querySelector('.chip-group[data-name="therapist_main_fields"]');
-  const subFieldsGroup = form.querySelector('.chip-group[data-name="therapist_sub_fields"]');
-  
-  if (!mainFieldsGroup || !subFieldsGroup) return;
-  
-  // Map of main fields to sub-specializations
-  const subSpecialtiesMap = {
-    'קלינאות תקשורת': [
-      'עיכוב שפתי',
-      'גמגום',
-      'קשיי היגוי',
-      'עיבוד שמיעתי',
-      'תקשורת חברתית',
-      'הזנה ואכילה',
-      'תקשורת תומכת וחליפית (AAC)'
-    ],
-    'ריפוי בעיסוק': [
-      'ויסות חושי',
-      'מוטוריקה עדינה',
-      'מוטוריקה גסה',
-      'גרפומוטוריקה',
-      'תפקודי יום-יום (ADL)',
-      'עבודה עם ASD',
-      'מיומנויות כיתה א׳'
-    ],
-    'פיזיותרפיה': [
-      'פיזיותרפיה תינוקות',
-      'פיזיותרפיה נשימתית',
-      'פציעות ספורט ילדים',
-      'שיקום לאחר פגיעה',
-      'טיפול ביציבה'
-    ],
-    'טיפול רגשי': [
-      'טיפול במשחק',
-      'טיפול באמצעות אמנות',
-      'ויסות רגשי',
-      'חרדות ילדים',
-      'טיפול דיאדי הורה-ילד'
-    ],
-    'פסיכולוגיה': [
-      'פסיכולוגיה התפתחותית',
-      'פסיכולוגיה חינוכית',
-      'CBT לילדים',
-      'טיפול משפחתי',
-      'טיפול בנוער עם חרדה'
-    ]
+  // Configuration
+  const specializationsData = {
+    'קלינאות תקשורת': {
+      icon: '🗣️',
+      subs: ['עיכוב שפתי', 'גמגום', 'קשיי היגוי', 'עיבוד שמיעתי', 'תקשורת חברתית', 'הזנה ואכילה', 'תקשורת תומכת וחליפית (AAC)']
+    },
+    'ריפוי בעיסוק': {
+      icon: '✋',
+      subs: ['ויסות חושי', 'מוטוריקה עדינה', 'מוטוריקה גסה', 'גרפומוטוריקה', 'תפקודי יום-יום (ADL)', 'עבודה עם ASD', 'מיומנויות כיתה א׳']
+    },
+    'פיזיותרפיה': {
+      icon: '🏃',
+      subs: ['פיזיותרפיה תינוקות', 'פיזיותרפיה נשימתית', 'פציעות ספורט ילדים', 'שיקום לאחר פגיעה', 'טיפול ביציבה']
+    },
+    'טיפול רגשי': {
+      icon: '💭',
+      subs: ['טיפול במשחק', 'טיפול באמצעות אמנות', 'ויסות רגשי', 'חרדות ילדים', 'טיפול דיאדי הורה-ילד']
+    },
+    'פסיכולוגיה': {
+      icon: '🧠',
+      subs: ['פסיכולוגיה התפתחותית', 'פסיכולוגיה חינוכית', 'CBT לילדים', 'טיפול משפחתי', 'טיפול בנוער עם חרדה']
+    }
   };
-  
-  const mainChips = mainFieldsGroup.querySelectorAll('.chip');
-  
-  mainChips.forEach(chip => {
-    chip.addEventListener('click', () => {
-      // Wait a bit for the chip to toggle its active state
-      setTimeout(() => {
-        updateTherapistSubSpecialties(mainFieldsGroup, subFieldsGroup, subSpecialtiesMap);
-      }, 50);
-    });
-  });
-}
 
-function updateTherapistSubSpecialties(mainFieldsGroup, subFieldsGroup, subSpecialtiesMap) {
-  // Get active main fields
-  const activeMainChips = mainFieldsGroup.querySelectorAll('.chip.active');
-  const selectedFields = Array.from(activeMainChips).map(chip => {
-    return chip.textContent.trim();
-  });
+  const container = document.getElementById('specializations-container');
+  const addBtn = document.getElementById('add-specialization-btn');
   
-  // Collect all relevant sub-specializations
-  let allSubSpecialties = [];
-  selectedFields.forEach(field => {
-    if (subSpecialtiesMap[field]) {
-      allSubSpecialties = allSubSpecialties.concat(subSpecialtiesMap[field]);
+  if (!container || !addBtn) return;
+
+  let specializationCount = 0;
+  const maxSpecializations = 3;
+  const selectedMainFields = new Set();
+
+  // Initialize with first specialization
+  addSpecializationBlock();
+
+  // Add button click handler
+  addBtn.addEventListener('click', () => {
+    if (specializationCount < maxSpecializations) {
+      addSpecializationBlock();
     }
   });
-  
-  // Remove duplicates
-  allSubSpecialties = [...new Set(allSubSpecialties)];
-  
-  // Clear existing sub-specialty chips
-  subFieldsGroup.innerHTML = '';
-  
-  // Create new chips for sub-specializations
-  if (allSubSpecialties.length > 0) {
-    allSubSpecialties.forEach(subSpec => {
+
+  function addSpecializationBlock() {
+    specializationCount++;
+    const blockId = `spec-block-${specializationCount}`;
+    
+    const block = document.createElement('div');
+    block.className = 'specialization-block';
+    block.id = blockId;
+    block.setAttribute('data-block-number', specializationCount);
+
+    block.innerHTML = `
+      <div class="specialization-header">
+        <span class="specialization-number">${specializationCount}</span>
+        ${specializationCount > 1 ? '<button type="button" class="remove-specialization-btn" title="הסר התמחות">✕</button>' : ''}
+      </div>
+
+      <div class="main-field-selector">
+        <label>בחר תחום טיפול עיקרי ${specializationCount === 1 ? '<span class="field-required">*</span>' : ''}</label>
+        <div class="main-field-chips" data-block-id="${blockId}">
+          ${Object.keys(specializationsData).map(field => `
+            <button type="button" class="main-field-chip" data-field="${field}">
+              <span class="chip-icon">${specializationsData[field].icon}</span>
+              <span>${field}</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="sub-fields-container" id="${blockId}-subs">
+        <label>בחר תתי-התמחויות (אופציונלי)</label>
+        <div class="sub-field-chips"></div>
+      </div>
+    `;
+
+    container.appendChild(block);
+
+    // Setup main field selection
+    const mainFieldChips = block.querySelectorAll('.main-field-chip');
+    mainFieldChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const field = chip.getAttribute('data-field');
+        
+        // Deselect other chips in this block
+        mainFieldChips.forEach(c => c.classList.remove('selected'));
+        
+        // Select this chip
+        chip.classList.add('selected');
+        
+        // Update selected fields tracking
+        const previousField = block.getAttribute('data-selected-field');
+        if (previousField) {
+          selectedMainFields.delete(previousField);
+        }
+        selectedMainFields.add(field);
+        block.setAttribute('data-selected-field', field);
+        
+        // Show sub-specializations
+        showSubSpecializations(blockId, field);
+        
+        // Update disabled states
+        updateDisabledFields();
+        
+        // Update hidden inputs
+        updateHiddenInputs();
+      });
+    });
+
+    // Setup remove button
+    if (specializationCount > 1) {
+      const removeBtn = block.querySelector('.remove-specialization-btn');
+      removeBtn.addEventListener('click', () => {
+        const selectedField = block.getAttribute('data-selected-field');
+        if (selectedField) {
+          selectedMainFields.delete(selectedField);
+        }
+        block.remove();
+        specializationCount--;
+        updateAddButtonState();
+        renumberBlocks();
+        updateDisabledFields();
+        updateHiddenInputs();
+      });
+    }
+
+    updateAddButtonState();
+    updateDisabledFields();
+  }
+
+  function showSubSpecializations(blockId, field) {
+    const subsContainer = document.getElementById(`${blockId}-subs`);
+    if (!subsContainer) return;
+
+    const subsChipsContainer = subsContainer.querySelector('.sub-field-chips');
+    const subs = specializationsData[field].subs;
+
+    // Clear existing
+    subsChipsContainer.innerHTML = '';
+
+    // Add sub-specialization chips
+    subs.forEach(sub => {
       const chip = document.createElement('button');
       chip.type = 'button';
-      chip.className = 'chip';
-      chip.textContent = subSpec;
+      chip.className = 'sub-field-chip';
+      chip.textContent = sub;
+      chip.setAttribute('data-sub', sub);
       
-      // Add click handler for the new chip
-      chip.addEventListener('click', (e) => {
-        e.preventDefault();
+      chip.addEventListener('click', () => {
         chip.classList.toggle('active');
-        
-        // Update hidden input
-        const activeChips = subFieldsGroup.querySelectorAll('.chip.active');
-        const values = Array.from(activeChips).map(c => c.textContent.trim());
-        const hiddenInput = subFieldsGroup.parentElement.querySelector('input[name="therapist_sub_fields"]');
-        if (hiddenInput) {
-          hiddenInput.value = values.join('|');
-        }
+        updateHiddenInputs();
       });
       
-      subFieldsGroup.appendChild(chip);
+      subsChipsContainer.appendChild(chip);
     });
+
+    // Show container
+    subsContainer.classList.add('visible');
+  }
+
+  function updateDisabledFields() {
+    const allMainChips = container.querySelectorAll('.main-field-chip');
     
-    // Show the sub-fields container
-    subFieldsGroup.parentElement.style.display = 'block';
-  } else {
-    // Hide if no main field selected
-    subFieldsGroup.parentElement.style.display = 'none';
+    allMainChips.forEach(chip => {
+      const field = chip.getAttribute('data-field');
+      const block = chip.closest('.specialization-block');
+      const blockSelectedField = block.getAttribute('data-selected-field');
+      
+      // Disable if selected in another block
+      if (selectedMainFields.has(field) && blockSelectedField !== field) {
+        chip.classList.add('disabled');
+      } else {
+        chip.classList.remove('disabled');
+      }
+    });
+  }
+
+  function updateAddButtonState() {
+    addBtn.disabled = specializationCount >= maxSpecializations;
+    if (specializationCount >= maxSpecializations) {
+      addBtn.textContent = 'הגעת למקסימום 3 התמחויות';
+    } else {
+      addBtn.innerHTML = '<span class="btn-icon">+</span> הוסף התמחות נוספת';
+    }
+  }
+
+  function renumberBlocks() {
+    const blocks = container.querySelectorAll('.specialization-block');
+    blocks.forEach((block, index) => {
+      const number = index + 1;
+      block.setAttribute('data-block-number', number);
+      const numberSpan = block.querySelector('.specialization-number');
+      if (numberSpan) numberSpan.textContent = number;
+    });
+  }
+
+  function updateHiddenInputs() {
+    const mainFieldsArray = Array.from(selectedMainFields);
+    const mainFieldsInput = document.getElementById('therapist_main_fields_hidden');
+    if (mainFieldsInput) {
+      mainFieldsInput.value = mainFieldsArray.join('|');
+    }
+
+    // Collect all selected sub-fields
+    const allActiveSubChips = container.querySelectorAll('.sub-field-chip.active');
+    const subFieldsArray = Array.from(allActiveSubChips).map(chip => chip.getAttribute('data-sub'));
+    const subFieldsInput = document.getElementById('therapist_sub_fields_hidden');
+    if (subFieldsInput) {
+      subFieldsInput.value = subFieldsArray.join('|');
+    }
   }
 }
 
@@ -1153,3 +1256,376 @@ window.FlowMatch = {
 };
 
 console.log('🚀 FlowMatch Enhanced System Ready!');
+
+// ============================================
+// Weekly Schedule Manager
+// ============================================
+
+function initializeScheduleManager() {
+  const openBtn = document.getElementById('open-schedule-manager');
+  const closeBtn = document.getElementById('close-schedule-manager');
+  const scheduleContainer = document.getElementById('schedule-manager');
+  const saveBtn = document.getElementById('save-schedule');
+  
+  if (!openBtn || !scheduleContainer) return;
+  
+  // Create weekly schedule on first open
+  let scheduleCreated = false;
+  
+  openBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    scheduleContainer.style.display = 'block';
+    
+    if (!scheduleCreated) {
+      createWeeklySchedule();
+      scheduleCreated = true;
+    }
+    
+    // Smooth scroll to schedule
+    setTimeout(() => {
+      scheduleContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+  });
+  
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      scheduleContainer.style.display = 'none';
+    });
+  }
+  
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      saveScheduleData();
+      showToast('לוח הזמנים נשמר בהצלחה! 📅', 'success');
+      scheduleContainer.style.display = 'none';
+    });
+  }
+}
+
+function createWeeklySchedule() {
+  const weeklySchedule = document.querySelector('.weekly-schedule');
+  if (!weeklySchedule) return;
+  
+  const days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+  const timeSlots = [
+    '08:00-10:00',
+    '10:00-12:00',
+    '12:00-14:00',
+    '14:00-16:00',
+    '16:00-18:00',
+    '18:00-20:00'
+  ];
+  
+  weeklySchedule.innerHTML = '';
+  
+  days.forEach((day, dayIndex) => {
+    const dayColumn = document.createElement('div');
+    dayColumn.className = 'day-column';
+    dayColumn.setAttribute('data-day', dayIndex);
+    
+    const dayHeader = document.createElement('div');
+    dayHeader.className = 'day-header';
+    dayHeader.textContent = day;
+    
+    const timeSlotsContainer = document.createElement('div');
+    timeSlotsContainer.className = 'time-slots';
+    
+    timeSlots.forEach((time, timeIndex) => {
+      const slot = document.createElement('label');
+      slot.className = 'time-slot';
+      slot.setAttribute('data-time', timeIndex);
+      
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.name = `schedule_${dayIndex}_${timeIndex}`;
+      checkbox.value = time;
+      
+      const timeText = document.createElement('span');
+      timeText.textContent = time;
+      
+      slot.appendChild(checkbox);
+      slot.appendChild(timeText);
+      
+      // Toggle selected class on click
+      slot.addEventListener('click', () => {
+        slot.classList.toggle('selected');
+      });
+      
+      timeSlotsContainer.appendChild(slot);
+    });
+    
+    dayColumn.appendChild(dayHeader);
+    dayColumn.appendChild(timeSlotsContainer);
+    weeklySchedule.appendChild(dayColumn);
+  });
+}
+
+function saveScheduleData() {
+  const selectedSlots = document.querySelectorAll('.time-slot.selected input[type="checkbox"]');
+  const scheduleData = {};
+  
+  selectedSlots.forEach(checkbox => {
+    const slot = checkbox.closest('.time-slot');
+    const dayColumn = slot.closest('.day-column');
+    const day = dayColumn.getAttribute('data-day');
+    const time = slot.getAttribute('data-time');
+    
+    if (!scheduleData[day]) {
+      scheduleData[day] = [];
+    }
+    scheduleData[day].push(checkbox.value);
+  });
+  
+  // Save to AppState
+  if (!AppState.therapistData) {
+    AppState.therapistData = {};
+  }
+  AppState.therapistData.weeklySchedule = scheduleData;
+  saveStateToStorage();
+  
+  console.log('✅ Schedule saved:', scheduleData);
+}
+
+// ============================================
+// Booking Modal & Details Modal
+// ============================================
+
+function initializeResultModals() {
+  const bookButtons = document.querySelectorAll('.btn-book');
+  const detailsButtons = document.querySelectorAll('.btn-details');
+  
+  // Book appointment buttons
+  bookButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const therapistName = btn.getAttribute('data-therapist');
+      openBookingModal(therapistName);
+    });
+  });
+  
+  // Details buttons
+  detailsButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const therapistName = btn.getAttribute('data-therapist');
+      openDetailsModal(therapistName);
+    });
+  });
+  
+  // Close modals
+  document.getElementById('close-booking-modal')?.addEventListener('click', closeBookingModal);
+  document.getElementById('close-details-modal')?.addEventListener('click', closeDetailsModal);
+  
+  // Close on backdrop click
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+      }
+    });
+  });
+}
+
+function openBookingModal(therapistName) {
+  const modal = document.getElementById('booking-modal');
+  const therapistNameEl = document.getElementById('booking-therapist-name');
+  
+  if (!modal || !therapistNameEl) return;
+  
+  therapistNameEl.textContent = therapistName;
+  modal.classList.add('active');
+  
+  // Generate calendar
+  generateBookingCalendar(therapistName);
+}
+
+function closeBookingModal() {
+  const modal = document.getElementById('booking-modal');
+  if (modal) modal.classList.remove('active');
+}
+
+function generateBookingCalendar(therapistName) {
+  const calendar = document.getElementById('booking-calendar');
+  if (!calendar) return;
+  
+  const days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+  const times = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+  
+  calendar.innerHTML = '';
+  
+  days.forEach((day, dayIndex) => {
+    const dayColumn = document.createElement('div');
+    dayColumn.className = 'booking-day';
+    
+    const dayHeader = document.createElement('div');
+    dayHeader.className = 'booking-day-header';
+    dayHeader.textContent = day;
+    
+    const slotsContainer = document.createElement('div');
+    slotsContainer.className = 'booking-slots';
+    
+    times.forEach(time => {
+      const slot = document.createElement('div');
+      
+      // Simulate some unavailable slots
+      const isUnavailable = Math.random() > 0.6;
+      
+      if (isUnavailable) {
+        slot.className = 'booking-slot unavailable';
+        slot.textContent = time;
+      } else {
+        slot.className = 'booking-slot';
+        slot.textContent = time;
+        
+        slot.addEventListener('click', () => {
+          // Deselect all
+          document.querySelectorAll('.booking-slot').forEach(s => s.classList.remove('selected'));
+          // Select this
+          slot.classList.add('selected');
+          // Show summary
+          showBookingSummary(therapistName, day, time);
+        });
+      }
+      
+      slotsContainer.appendChild(slot);
+    });
+    
+    dayColumn.appendChild(dayHeader);
+    dayColumn.appendChild(slotsContainer);
+    calendar.appendChild(dayColumn);
+  });
+}
+
+function showBookingSummary(therapist, day, time) {
+  const summary = document.getElementById('booking-summary');
+  const summaryTherapist = document.getElementById('summary-therapist');
+  const summaryDate = document.getElementById('summary-date');
+  const summaryTime = document.getElementById('summary-time');
+  
+  if (!summary) return;
+  
+  summaryTherapist.textContent = therapist;
+  summaryDate.textContent = `יום ${day}`;
+  summaryTime.textContent = time;
+  
+  summary.style.display = 'block';
+  
+  // Confirm booking button
+  const confirmBtn = summary.querySelector('.btn-confirm-booking');
+  if (confirmBtn) {
+    confirmBtn.onclick = () => {
+      showToast(`התור נקבע בהצלחה! יום ${day} בשעה ${time} 🎉`, 'success');
+      closeBookingModal();
+    };
+  }
+}
+
+function openDetailsModal(therapistName) {
+  const modal = document.getElementById('details-modal');
+  const detailsContainer = document.getElementById('therapist-full-details');
+  
+  if (!modal || !detailsContainer) return;
+  
+  // Generate full details
+  detailsContainer.innerHTML = generateFullDetails(therapistName);
+  
+  modal.classList.add('active');
+}
+
+function closeDetailsModal() {
+  const modal = document.getElementById('details-modal');
+  if (modal) modal.classList.remove('active');
+}
+
+function generateFullDetails(therapistName) {
+  // Mock data - in real version this would come from backend
+  const details = {
+    'נועה כהן': {
+      title: 'קלינאית תקשורת בכירה',
+      experience: '15 שנות ניסיון',
+      education: 'תואר שני בקלינאות תקשורת, אוניברסיטת תל אביב',
+      specializations: ['עיכוב שפתי', 'גמגום', 'תקשורת חברתית', 'AAC'],
+      organizations: ['מכבי זהב', 'עמותת אלה', 'בתי ספר ברמת גן'],
+      location: 'רמת גן, תל אביב',
+      clinic: 'קליניקה נגישה, חנייה פרטית, משחקייה לילדים',
+      approach: 'גישה הוליסטית המשלבת משחק, אמנות ותקשורת. דגש על שיתוף הורים בתהליך.',
+      languages: 'עברית, אנגלית, רוסית',
+      pricing: '₪350-450 לפגישה'
+    },
+    'ד״ר רון לוי': {
+      title: 'פסיכולוג קליני וחינוכי',
+      experience: '12 שנות ניסיון',
+      education: 'דוקטורט בפסיכולוגיה קלינית, אוניברסיטת חיפה',
+      specializations: ['CBT', 'ADHD', 'חרדות', 'טיפול משפחתי'],
+      organizations: ['קופת חולים כללית', 'משרד החינוך', 'יועץ ל-SHEKEL'],
+      location: 'חיפה, קריות',
+      clinic: 'חדרי טיפול שקטים, נגיש למוגבלות, טיפול אונליין זמין',
+      approach: 'שילוב CBT וטיפול התנהגותי-רגשי מותאם גיל. דגש על כלים מעשיים.',
+      languages: 'עברית, אנגלית',
+      pricing: '₪400-500 לפגישה'
+    },
+    'לירון מזרחי': {
+      title: 'מרפאה בעיסוק',
+      experience: '8 שנות ניסיון',
+      education: 'תואר ראשון בריפוי בעיסוק + הסמכה בויסות חושי',
+      specializations: ['ויסות חושי', 'מוטוריקה עדינה', 'ADL', 'ASD'],
+      organizations: ['עמותת נצח', 'גנים בתל אביב', 'מרכז התפתחות הילד'],
+      location: 'תל אביב מרכז',
+      clinic: 'ציוד מקצועי מלא, משחקייה חושית, קומת קרקע',
+      approach: 'טיפול חושי מבוסס מחקר. שילוב הורים בתהליך הטיפולי.',
+      languages: 'עברית, אנגלית',
+      pricing: '₪320-400 לפגישה'
+    }
+  };
+  
+  const data = details[therapistName] || details['נועה כהן'];
+  
+  return `
+    <div class="therapist-details-full">
+      <div class="details-section">
+        <h4>👤 ${therapistName}</h4>
+        <p class="therapist-title">${data.title}</p>
+        <p><strong>ניסיון:</strong> ${data.experience}</p>
+      </div>
+      
+      <div class="details-section">
+        <h4>🎓 השכלה והסמכות</h4>
+        <p>${data.education}</p>
+      </div>
+      
+      <div class="details-section">
+        <h4>🎯 התמחויות</h4>
+        <div class="spec-tags">
+          ${data.specializations.map(s => `<span class="spec-tag">${s}</span>`).join('')}
+        </div>
+      </div>
+      
+      <div class="details-section">
+        <h4>🏢 ארגונים ומסגרות</h4>
+        <ul>
+          ${data.organizations.map(o => `<li>${o}</li>`).join('')}
+        </ul>
+      </div>
+      
+      <div class="details-section">
+        <h4>📍 מיקום וקליניקה</h4>
+        <p><strong>איזור:</strong> ${data.location}</p>
+        <p><strong>הקליניקה:</strong> ${data.clinic}</p>
+      </div>
+      
+      <div class="details-section">
+        <h4>💡 גישה טיפולית</h4>
+        <p>${data.approach}</p>
+      </div>
+      
+      <div class="details-section">
+        <h4>🗣️ שפות</h4>
+        <p>${data.languages}</p>
+      </div>
+      
+      <div class="details-section">
+        <h4>💰 מחיר משוער</h4>
+        <p>${data.pricing}</p>
+        <p class="price-note">* ניתן להגיש לביטוח דרך מודול ההחזרים של FlowInsurance</p>
+      </div>
+    </div>
+  `;
+}
