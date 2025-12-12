@@ -202,7 +202,7 @@ body {
   backdrop-filter: blur(12px);
   border-radius: var(--radius-full);
   box-shadow: var(--shadow-lg);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.15);
   margin-bottom: 32px;
   gap: 24px;
   animation: slideDown 0.6s ease;
@@ -2855,4 +2855,670 @@ a:focus-visible {
 .success-info strong {
   color: var(--primary);
   font-weight: 700;
+}
+
+/* ============================================
+   Dynamic Specializations System (Therapist Step 2)
+   ============================================ */
+
+#specializations-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.specialization-block {
+  background: var(--bg-card);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  position: relative;
+  transition: all var(--transition-base);
+}
+
+.specialization-block:hover {
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-md);
+}
+
+.specialization-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.specialization-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.remove-specialization-btn {
+  background: transparent;
+  border: none;
+  color: var(--error);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.remove-specialization-btn:hover {
+  background: #fee2e2;
+  transform: scale(1.1);
+}
+
+.main-field-selector {
+  margin-bottom: 16px;
+}
+
+.main-field-selector label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+.main-field-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.main-field-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: white;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.main-field-chip:hover {
+  border-color: var(--primary);
+  background: var(--bg-soft);
+  transform: translateY(-2px);
+}
+
+.main-field-chip.selected {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(61, 123, 253, 0.3);
+}
+
+.main-field-chip.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.sub-fields-container {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+  display: none;
+}
+
+.sub-fields-container.visible {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+.sub-fields-container label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.sub-field-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sub-field-chip {
+  padding: 8px 16px;
+  background: var(--bg-soft);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.sub-field-chip:hover {
+  background: var(--primary-light);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.sub-field-chip.active {
+  background: var(--secondary);
+  color: white;
+  border-color: var(--secondary);
+  box-shadow: 0 2px 8px rgba(34, 193, 195, 0.3);
+}
+
+.add-specialization-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: transparent;
+  border: 2px dashed var(--border-medium);
+  color: var(--primary);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  margin-bottom: 24px;
+}
+
+.add-specialization-btn:hover {
+  background: var(--bg-soft);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.add-specialization-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--border-medium);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   Weekly Schedule Manager
+   ============================================ */
+
+.chip-special {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  font-weight: 700;
+  border: none;
+}
+
+.chip-special:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(61, 123, 253, 0.4);
+}
+
+.schedule-manager-container {
+  background: var(--bg-card);
+  border: 2px solid var(--primary-light);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-top: 20px;
+  animation: slideDown 0.3s ease;
+}
+
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.schedule-header h4 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.btn-close-schedule {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.btn-close-schedule:hover {
+  background: var(--bg-soft);
+  color: var(--error);
+  transform: scale(1.1);
+}
+
+.schedule-hint {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.weekly-schedule {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.day-column {
+  background: white;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 8px;
+  transition: all var(--transition-fast);
+}
+
+.day-column:hover {
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.day-header {
+  text-align: center;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 14px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border-light);
+}
+
+.time-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.time-slot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  background: var(--bg-soft);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 2px solid transparent;
+}
+
+.time-slot:hover {
+  background: var(--primary-light);
+  color: white;
+}
+
+.time-slot.selected {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.time-slot input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.save-schedule-btn {
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .weekly-schedule {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .weekly-schedule {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .weekly-schedule {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   Organizations Section (Past/Current)
+   ============================================ */
+
+.orgs-section {
+  background: var(--bg-soft);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.sub-label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+.org-details {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+/* ============================================
+   Modal System
+   ============================================ */
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal.active {
+  display: flex;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+.modal-large {
+  max-width: 900px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 2px solid var(--border-light);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--text-primary);
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-sm);
+}
+
+.modal-close:hover {
+  background: var(--bg-soft);
+  color: var(--error);
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-hint {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   Booking Calendar
+   ============================================ */
+
+.booking-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.booking-day {
+  background: white;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 8px;
+}
+
+.booking-day-header {
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+.booking-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.booking-slot {
+  padding: 8px;
+  background: var(--bg-soft);
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.booking-slot:hover {
+  background: var(--primary-light);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.booking-slot.selected {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary-dark);
+  font-weight: 700;
+}
+
+.booking-slot.unavailable {
+  background: #f1f1f1;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.booking-slot.unavailable:hover {
+  transform: none;
+  background: #f1f1f1;
+  color: #999;
+}
+
+.booking-summary {
+  background: var(--bg-soft);
+  border: 2px solid var(--primary-light);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.booking-summary h4 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--primary);
+}
+
+.booking-summary p {
+  margin: 8px 0;
+  font-size: 15px;
+}
+
+.btn-confirm-booking {
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .booking-calendar {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-calendar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ============================================
+   Therapist Full Details
+   ============================================ */
+
+.therapist-details-full {
+  max-width: 800px;
+}
+
+.details-section {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.details-section:last-child {
+  border-bottom: none;
+}
+
+.details-section h4 {
+  color: var(--primary);
+  font-size: 16px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.therapist-title {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-style: italic;
+}
+
+.spec-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.spec-tag {
+  display: inline-block;
+  padding: 6px 14px;
+  background: var(--secondary);
+  color: white;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.details-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.details-section ul li {
+  padding: 8px 0;
+  padding-right: 20px;
+  position: relative;
+}
+
+.details-section ul li:before {
+  content: "✓";
+  position: absolute;
+  right: 0;
+  color: var(--success);
+  font-weight: 700;
+}
+
+.price-note {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 8px;
 }
