@@ -244,10 +244,10 @@ body {
 
 .brand-name {
   font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 20px;
+  font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .brand-tagline {
@@ -308,7 +308,7 @@ body {
 
 .main-content {
   animation: fadeIn 0.6s ease;
-  padding-top: 60px;
+  padding-top: 80px;
 }
 
 @keyframes fadeIn {
@@ -4209,4 +4209,273 @@ a:focus-visible {
   margin-right: 8px;
   vertical-align: middle;
   letter-spacing: 0.5px;
+}
+
+/* Task 2: Navigation icons */
+.nav-icon {
+  width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  opacity: 0.7;
+  transition: opacity var(--transition-fast);
+}
+
+.nav-btn:hover .nav-icon {
+  opacity: 1;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Task 4: Flow Diagram */
+.flow-diagram-container {
+  max-width: 1000px;
+  margin: 60px auto 80px;
+  padding: 40px 20px;
+  background: white;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.flow-diagram {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Flow Boxes */
+.flow-box {
+  fill: #f8f9fa;
+  stroke: #3d7bfd;
+  stroke-width: 2;
+}
+
+.therapist-box {
+  stroke: #22c1c3;
+}
+
+.treatment-box {
+  fill: #e3f2fd;
+  stroke: #1976d2;
+  stroke-width: 2.5;
+}
+
+.optional-box {
+  fill: #fff8e1;
+  stroke: #f59e0b;
+  stroke-width: 2;
+  stroke-dasharray: 5,5;
+}
+
+.flow-box-small {
+  fill: #fafafa;
+  stroke: #9e9e9e;
+  stroke-width: 1.5;
+}
+
+/* Match Circle */
+.match-circle {
+  fill: linear-gradient(135deg, #3d7bfd, #22c1c3);
+  fill: #3d7bfd;
+  stroke: #22c1c3;
+  stroke-width: 4;
+  filter: drop-shadow(0 4px 12px rgba(61, 123, 253, 0.3));
+}
+
+/* Text Styles */
+.flow-text {
+  fill: #212529;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+
+.flow-text-bold {
+  fill: #1976d2;
+  font-family: var(--font-primary);
+  font-size: 15px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.flow-text-small {
+  fill: #f59e0b;
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.flow-text-xs {
+  fill: #666;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 500;
+  text-anchor: middle;
+}
+
+.match-text-main {
+  fill: white;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  text-anchor: middle;
+}
+
+.match-text-sub {
+  fill: white;
+  font-family: var(--font-primary);
+  font-size: 11px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+
+.flow-note {
+  fill: #666;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-style: italic;
+  text-anchor: start;
+}
+
+/* Arrows */
+.flow-arrow {
+  fill: none;
+  stroke: #666;
+  stroke-width: 2;
+}
+
+.flow-arrow-head {
+  fill: #666;
+}
+
+.flow-arrow-dashed {
+  fill: none;
+  stroke: #999;
+  stroke-width: 1.5;
+  stroke-dasharray: 4,4;
+}
+
+.flow-arrow-thin {
+  fill: none;
+  stroke: #999;
+  stroke-width: 1.5;
+}
+
+.flow-arrow-head-thin {
+  fill: #999;
+}
+
+/* Caption */
+.diagram-caption {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .flow-diagram-container {
+    padding: 20px 10px;
+  }
+  
+  .flow-text {
+    font-size: 10px;
+  }
+  
+  .match-text-main {
+    font-size: 16px;
+  }
+}
+
+/* Task 6: Contact Details Block */
+.contact-details-block {
+  margin-top: 40px;
+  padding: 32px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+}
+
+.contact-details-block h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.contact-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contact-method {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.contact-method:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(61, 123, 253, 0.1);
+  transform: translateY(-2px);
+}
+
+.contact-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.contact-method-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contact-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.contact-value:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .contact-details-block {
+    padding: 20px;
+  }
+  
+  .contact-method {
+    padding: 12px;
+  }
 }
