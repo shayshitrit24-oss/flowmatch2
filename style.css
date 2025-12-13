@@ -4392,3 +4392,7 @@ a:focus-visible {
     padding: 12px;
   }
 }
+/* TEMP: disable global loading overlay */
+.loading-screen {
+  display: none !important;
+}
