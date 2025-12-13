@@ -77,55 +77,52 @@ function loadStateFromStorage() {
 }
 
 // ============================================
-// Navigation
+// Navigation - Event Delegation
 // ============================================
 
 function initializeNavigation() {
-  const views = document.querySelectorAll('.view');
-  const navButtons = document.querySelectorAll('[data-view]');
-  const startParentButtons = document.querySelectorAll('.js-start-parent');
-  const startTherapistButtons = document.querySelectorAll('.js-start-therapist');
-  const backHomeButtons = document.querySelectorAll('.js-back-home');
-  const goToParentStep1Buttons = document.querySelectorAll('.js-go-to-parent-step1');
-
-  // Navigation buttons
-  navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const viewId = btn.getAttribute('data-view');
-      if (viewId) showView(viewId);
-    });
-  });
-
-  // Start parent flow
-  startParentButtons.forEach(btn => {
-    btn.addEventListener('click', () => showView('parent-flow'));
-  });
-
-  // Start therapist flow
-  startTherapistButtons.forEach(btn => {
-    btn.addEventListener('click', () => showView('therapist-flow'));
-  });
-
-  // Go to parent step 1 (child details)
-  goToParentStep1Buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
+  // Single document-level click listener for all navigation
+  document.addEventListener('click', (e) => {
+    // Find closest element with data-view attribute
+    const target = e.target.closest('[data-view]');
+    
+    if (target) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const viewId = target.getAttribute('data-view');
+      if (viewId) {
+        showView(viewId);
+      }
+    }
+    
+    // Handle special navigation classes
+    const parentBtn = e.target.closest('.js-start-parent');
+    if (parentBtn) {
+      e.preventDefault();
       showView('parent-flow');
-      // Navigate to step 1
+      return;
+    }
+    
+    const therapistBtn = e.target.closest('.js-start-therapist');
+    if (therapistBtn) {
+      e.preventDefault();
+      showView('therapist-flow');
+      return;
+    }
+    
+    const parentStep1Btn = e.target.closest('.js-go-to-parent-step1');
+    if (parentStep1Btn) {
+      e.preventDefault();
+      showView('parent-flow');
       setTimeout(() => {
         const form = document.getElementById('parent-form');
         if (form) {
           navigateToStep('parent', 1, form);
         }
       }, 100);
-    });
-  });
-
-  // Back to home
-  backHomeButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const view = btn.getAttribute('data-view') || 'landing';
-      showView(view);
-    });
+      return;
+    }
   });
 }
 
