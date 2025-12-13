@@ -28,23 +28,12 @@ const AppState = {
 };
 
 // ============================================
-// Initialization
+// Initialization - Immediate execution
 // ============================================
 
-document.addEventListener('DOMContentLoaded', () => {
-  initializeApp();
-});
+initializeApp();
 
 function initializeApp() {
-  // Show loading screen
-  const loadingScreen = document.getElementById('loadingScreen');
-  
-  setTimeout(() => {
-    if (loadingScreen) {
-      loadingScreen.classList.add('hidden');
-    }
-  }, 1500);
-
   // Load saved data
   loadStateFromStorage();
   
