@@ -4196,3 +4196,17 @@ a:focus-visible {
 .contact-note a:hover {
   text-decoration: underline;
 }
+
+/* Task 2: Inline demo badge for headers */
+.demo-badge-inline {
+  display: inline-block;
+  padding: 3px 10px;
+  background: rgba(61, 123, 253, 0.1);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  margin-right: 8px;
+  vertical-align: middle;
+  letter-spacing: 0.5px;
+}
