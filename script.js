@@ -81,28 +81,31 @@ function loadStateFromStorage() {
 // ============================================
 
 function initializeNavigation() {
-  // Single document-level click listener for all navigation
   document.addEventListener('click', (e) => {
-    // Find closest element with data-view attribute
     const target = e.target.closest('[data-view]');
-    
-    if (target) {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const viewId = target.getAttribute('data-view');
-      if (viewId) {
-        showView(viewId);
-      }
+    if (!target) return;
+
+    // אם לחצו על אייקון / SVG / span – נרים את הקליק לאלמנט האב
+    if (e.target !== target) {
+      target.click();
+      return;
     }
-    
-    // Handle special navigation classes
+
+    // טיפולים מיוחדים (אם יש)
     const parentBtn = e.target.closest('.js-start-parent');
     if (parentBtn) {
       e.preventDefault();
-      showView('parent-flow');
+      // כאן לא קוראים ל-showView
       return;
     }
+
+    const therapistBtn = e.target.closest('.js-start-therapist');
+    if (therapistBtn) {
+      e.preventDefault();
+      return;
+    }
+  });
+}
     
     const therapistBtn = e.target.closest('.js-start-therapist');
     if (therapistBtn) {
