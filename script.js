@@ -31,8 +31,6 @@ const AppState = {
 // Initialization - Immediate execution
 // ============================================
 
-initializeApp();
-
 function initializeApp() {
   // Load saved data
   loadStateFromStorage();
@@ -1150,3 +1148,21 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   showView(viewId);
 });
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('JS loaded');
+
+  initializeApp();
+
+  // navigation click handler
+  document.addEventListener('click', (e) => {
+    const nav = e.target.closest('[data-view]');
+    if (!nav) return;
+
+    const viewId = nav.getAttribute('data-view');
+    if (!viewId) return;
+
+    e.preventDefault();
+    showView(viewId);
+  });
+});
+
