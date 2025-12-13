@@ -4399,3 +4399,13 @@ a:focus-visible {
 /* ================================
    FIX: app-shell should not block clicks
    ================================ */
+/* FORCE ENABLE INTERACTION */
+html,
+body,
+.app-shell,
+.view,
+button,
+a {
+  pointer-events: auto !important;
+}
+
