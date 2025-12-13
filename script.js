@@ -1118,3 +1118,36 @@ window.FlowMatch = {
   showToast,
   navigateToStep
 };
+// ===============================
+// SIMPLE VIEW NAVIGATION (SAFE)
+// ===============================
+
+function showView(viewId) {
+  // hide all views
+  document.querySelectorAll('[data-view-content]').forEach(el => {
+    el.style.display = 'none';
+  });
+
+  // show requested view
+  const view = document.querySelector(`[data-view-content="${viewId}"]`);
+  if (view) {
+    view.style.display = 'block';
+  }
+
+  // optional state tracking
+  if (window.AppState) {
+    AppState.currentView = viewId;
+  }
+}
+
+// global click handler for navigation
+document.addEventListener('click', (e) => {
+  const nav = e.target.closest('[data-view]');
+  if (!nav) return;
+
+  const viewId = nav.getAttribute('data-view');
+  if (!viewId) return;
+
+  e.preventDefault();
+  showView(viewId);
+});
