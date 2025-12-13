@@ -38,7 +38,6 @@ function initializeApp() {
   loadStateFromStorage();
   
   // Initialize all components
-  initializeNavigation();
   initializeParentFlow();
   initializeTherapistFlow();
   initializeInsuranceModule();
