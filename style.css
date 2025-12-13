@@ -3715,3 +3715,322 @@ a:focus-visible {
 .duration-option input[type="radio"] {
   margin: 0;
 }
+
+/* ============================================
+   Demo Daily Screens Section
+   ============================================ */
+
+.demo-daily-section {
+  margin-top: 80px;
+  padding: 60px 24px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: var(--radius-xl);
+}
+
+.demo-daily-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.demo-daily-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.demo-daily-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* ============================================
+   Phone Mocks Container
+   ============================================ */
+
+.demo-phones-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 40px;
+  max-width: 800px;
+  margin: 0 auto 60px;
+}
+
+.demo-phone-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.phone-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* ============================================
+   Phone Mock Design
+   ============================================ */
+
+.phone-mock {
+  width: 340px;
+  max-width: 100%;
+  background: #1a1a1a;
+  border-radius: 32px;
+  padding: 12px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 0 8px #2a2a2a,
+    0 0 0 12px #1a1a1a;
+  position: relative;
+}
+
+.phone-mock::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 20px;
+  background: #1a1a1a;
+  border-radius: 0 0 12px 12px;
+  z-index: 10;
+}
+
+.phone-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  background: #1a1a1a;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+  z-index: 5;
+}
+
+.phone-time {
+  flex: 1;
+}
+
+.phone-icons {
+  display: flex;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.phone-content {
+  background: white;
+  border-radius: 0 0 20px 20px;
+  padding: 16px;
+  min-height: 500px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/* ============================================
+   Notification Cards
+   ============================================ */
+
+.notification-card {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.notification-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.notif-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.notif-content {
+  flex: 1;
+}
+
+.notif-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.notif-time,
+.notif-detail {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+.notif-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.notif-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border-light);
+  background: white;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.notif-btn:hover {
+  background: var(--bg-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.notif-btn-primary {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.notif-btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+/* Notification Card Variants */
+.notification-primary {
+  border-right: 4px solid var(--primary);
+  background: linear-gradient(to left, rgba(61, 123, 253, 0.03), white);
+}
+
+.notification-success {
+  border-right: 4px solid var(--success);
+  background: linear-gradient(to left, rgba(16, 185, 129, 0.03), white);
+}
+
+.notification-warning {
+  border-right: 4px solid var(--warning);
+  background: linear-gradient(to left, rgba(245, 158, 11, 0.03), white);
+}
+
+.notification-info {
+  border-right: 4px solid var(--secondary);
+  background: linear-gradient(to left, rgba(34, 193, 195, 0.03), white);
+}
+
+.notification-feedback {
+  border-right: 4px solid #f59e0b;
+  background: linear-gradient(to left, rgba(245, 158, 11, 0.03), white);
+}
+
+/* ============================================
+   Demo Capabilities
+   ============================================ */
+
+.demo-capabilities {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px;
+  background: white;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.demo-capabilities h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.capabilities-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.capabilities-list li {
+  padding: 12px 0;
+  font-size: 15px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.capabilities-list li:last-child {
+  border-bottom: none;
+}
+
+.badge-dev {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--warning-light);
+  color: var(--warning);
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  margin-right: 8px;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+  .demo-phones-container {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .phone-mock {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .demo-daily-section {
+    padding: 40px 16px;
+  }
+
+  .demo-daily-header h2 {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .phone-content {
+    min-height: 400px;
+    max-height: 500px;
+  }
+
+  .notification-card {
+    padding: 12px;
+  }
+
+  .notif-icon {
+    font-size: 24px;
+  }
+
+  .notif-title {
+    font-size: 14px;
+  }
+}
