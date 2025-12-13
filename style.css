@@ -4399,12 +4399,3 @@ a:focus-visible {
 /* ================================
    FIX: app-shell should not block clicks
    ================================ */
-.app-shell {
-  pointer-events: none;
-}
-
-.app-shell header,
-.app-shell main,
-.app-shell footer {
-  pointer-events: auto;
-}
