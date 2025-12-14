@@ -4566,3 +4566,53 @@ a:focus-visible {
   }
 }
 
+
+/* =============================================
+   ENHANCED DEMO CARD STYLING
+   ============================================= */
+
+.demo-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.demo-card .demo-desc {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 1rem 0 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Add icons/emojis before descriptions */
+.demo-desc::before {
+  content: '📱';
+  display: block;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Make phone mocks stand out */
+.phone-mock {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  transform: scale(1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.phone-mock:hover {
+  transform: scale(1.02);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+}
+
+/* Demo section mobile styling */
+.demo-section-mobile {
+  margin: 4rem 0;
+  padding: 2rem 0;
+  background: linear-gradient(to bottom, transparent, rgba(61, 123, 253, 0.03), transparent);
+  border-radius: 20px;
+}
+
