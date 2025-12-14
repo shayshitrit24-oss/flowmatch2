@@ -6,12 +6,10 @@
 (function() {
   'use strict';
   
-  // Wait for DOM to be ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initDemoEnhancements);
-  } else {
+  // Wait for DOM to be ready AND main script to initialize
+  setTimeout(function() {
     initDemoEnhancements();
-  }
+  }, 100);
   
   function initDemoEnhancements() {
     console.log('🎭 Initializing demo enhancements...');
@@ -29,18 +27,23 @@
     const demoMenuButtons = document.querySelectorAll('.demo-menu-btn');
     
     if (demoMenuButtons.length === 0) {
-      console.log('⚠️  No demo menu buttons found');
+      console.log('ℹ️  No demo menu buttons found');
       return;
     }
     
     demoMenuButtons.forEach(btn => {
-      btn.addEventListener('click', function() {
-        const demoId = this.getAttribute('data-demo');
-        switchDemoScreen(demoId);
+      btn.addEventListener('click', function(e) {
+        // Don't interfere with navigation
+        e.stopPropagation();
         
-        // Update active state
-        demoMenuButtons.forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
+        const demoId = this.getAttribute('data-demo');
+        if (demoId) {
+          switchDemoScreen(demoId);
+          
+          // Update active state
+          demoMenuButtons.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+        }
       });
     });
     
