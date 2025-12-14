@@ -310,10 +310,50 @@ function validateCurrentStep(flowType, step) {
   
   if (!panel) return true;
   
+  // For therapist flow - lenient validation for demo
+  if (flowType === 'therapist') {
+    // Step 1: Only require name and email
+    if (step === 1) {
+      const name = panel.querySelector('[name="therapist_name"]');
+      const email = panel.querySelector('[name="therapist_email"]');
+      
+      let isValid = true;
+      
+      if (name && !name.value.trim()) {
+        showFieldError(name, 'שדה חובה');
+        isValid = false;
+      } else if (name) {
+        hideFieldError(name);
+      }
+      
+      if (email && !email.value.trim()) {
+        showFieldError(email, 'שדה חובה');
+        isValid = false;
+      } else if (email) {
+        hideFieldError(email);
+      }
+      
+      if (!isValid) {
+        showToast('נא להזין שם ודוא"ל', 'error');
+      }
+      
+      return isValid;
+    }
+    
+    // Steps 2-4: Allow progression (demo mode)
+    return true;
+  }
+  
+  // For parent flow - standard validation
   const requiredFields = panel.querySelectorAll('[required]');
   let isValid = true;
   
   requiredFields.forEach(field => {
+    // Skip hidden or disabled fields
+    if (field.offsetParent === null || field.disabled) {
+      return;
+    }
+    
     if (!field.value.trim()) {
       isValid = false;
       showFieldError(field, 'שדה חובה');
