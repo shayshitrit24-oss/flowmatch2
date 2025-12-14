@@ -1,5 +1,5 @@
 /**
- * FlowMatch - Enhanced JavaScript
+ * FlowMatch - Complete JavaScript with Navigation Fix
  * Modern, Feature-Rich, Professional
  */
 
@@ -28,10 +28,12 @@ const AppState = {
 };
 
 // ============================================
-// Initialization - Immediate execution
+// Initialization
 // ============================================
 
 function initializeApp() {
+  console.log('🚀 Starting FlowMatch initialization...');
+  
   // Load saved data
   loadStateFromStorage();
   
@@ -49,6 +51,13 @@ function initializeApp() {
   setupGlobalListeners();
   
   console.log('✅ FlowMatch initialized successfully');
+}
+
+// Auto-run when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+  initializeApp();
 }
 
 // ============================================
@@ -77,57 +86,43 @@ function loadStateFromStorage() {
 }
 
 // ============================================
-// Navigation - Event Delegation
+// Navigation System - FIXED
 // ============================================
 
 function initializeNavigation() {
-  console.log('🚀 Initializing navigation system...');
+  console.log('📋 Setting up navigation...');
   
-  // Single document-level click listener for all navigation
-  document.addEventListener('click', (e) => {
-    // Find closest element with data-view attribute
-    const target = e.target.closest('[data-view]');
+  document.addEventListener('click', function(e) {
+    const button = e.target.closest('[data-view]');
     
-    if (target) {
-      const viewId = target.getAttribute('data-view');
+    if (button) {
+      const viewId = button.getAttribute('data-view');
+      console.log('🎯 Navigation clicked:', viewId);
       
-      if (viewId) {
-        console.log(`🎯 Navigating to view: ${viewId}`);
-        
-        // Hide all views
-        const allViews = document.querySelectorAll('.view');
-        allViews.forEach(view => {
-          view.classList.remove('active');
-        });
-        
-        // Show target view
-        const targetView = document.getElementById(viewId);
-        if (targetView) {
-          targetView.classList.add('active');
-          
-          // Update state
-          AppState.currentView = viewId;
-          saveStateToStorage();
-          
-          // Scroll to top
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          
-          console.log(`✅ View switched to: ${viewId}`);
-        } else {
-          console.warn(`⚠️ View not found: ${viewId}`);
-        }
+      const allViews = document.querySelectorAll('.view');
+      
+      allViews.forEach(function(view) {
+        view.classList.remove('active');
+      });
+      
+      const targetView = document.getElementById(viewId);
+      if (targetView) {
+        targetView.classList.add('active');
+        AppState.currentView = viewId;
+        saveStateToStorage();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        console.log('✅ Switched to:', viewId);
+      } else {
+        console.error('❌ View not found:', viewId);
       }
+      
+      e.preventDefault();
     }
-  });
+  }, true);
   
-  console.log('✅ Navigation system initialized');
+  console.log('✅ Navigation ready!');
 }
 
-// ============================================
-// Parent Flow
-// ============================================
-
-function initializeParentFlow() {
   const form = document.getElementById('parent-form');
   if (!form) return;
 
