@@ -2470,4 +2470,25 @@
     <defs>
       <linearGradient id="score-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#3d7bfd"/>
-        <stop offset="100%" stop
+        <stop offset="100%" stop-color=\"#22c1c3\"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- Main Script -->
+  <script src="script.js"></script>
+  
+  <!-- Loading Screen Fallback -->
+  <script>
+    // Fallback: Hide loading screen after 3 seconds even if main script fails
+    setTimeout(function() {
+      var loadingScreen = document.getElementById('loadingScreen');
+      if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+        loadingScreen.classList.add('hidden');
+        console.warn('⚠️ Loading screen hidden by fallback timeout');
+      }
+    }, 3000);
+  </script>
+
+</body>
+</html>
