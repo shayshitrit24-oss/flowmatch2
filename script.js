@@ -28,28 +28,14 @@ const AppState = {
 };
 
 // ============================================
-// Initialization
+// Initialization - Immediate execution
 // ============================================
 
-document.addEventListener('DOMContentLoaded', () => {
-  initializeApp();
-});
-
 function initializeApp() {
-  // Show loading screen
-  const loadingScreen = document.getElementById('loadingScreen');
-  
-  setTimeout(() => {
-    if (loadingScreen) {
-      loadingScreen.classList.add('hidden');
-    }
-  }, 1500);
-
   // Load saved data
   loadStateFromStorage();
   
   // Initialize all components
-  initializeNavigation();
   initializeParentFlow();
   initializeTherapistFlow();
   initializeInsuranceModule();
@@ -88,81 +74,22 @@ function loadStateFromStorage() {
 }
 
 // ============================================
-// Navigation
+// Navigation - Event Delegation
 // ============================================
 
 function initializeNavigation() {
-  const views = document.querySelectorAll('.view');
-  const navButtons = document.querySelectorAll('[data-view]');
-  const startParentButtons = document.querySelectorAll('.js-start-parent');
-  const startTherapistButtons = document.querySelectorAll('.js-start-therapist');
-  const backHomeButtons = document.querySelectorAll('.js-back-home');
-  const goToParentStep1Buttons = document.querySelectorAll('.js-go-to-parent-step1');
-
-  // Navigation buttons
-  navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const viewId = btn.getAttribute('data-view');
-      if (viewId) showView(viewId);
-    });
+  // Single document-level click listener for all navigation
+  document.addEventListener('click', (e) => {
+    // Find closest element with data-view attribute
+    const target = e.target.closest('[data-view]');
+    
+    // If we clicked inside a [data-view] element but not directly on it,
+    // forward the click to the parent
+    if (target && e.target !== target) {
+      target.click();
+      return;
+    }
   });
-
-  // Start parent flow
-  startParentButtons.forEach(btn => {
-    btn.addEventListener('click', () => showView('parent-flow'));
-  });
-
-  // Start therapist flow
-  startTherapistButtons.forEach(btn => {
-    btn.addEventListener('click', () => showView('therapist-flow'));
-  });
-
-  // Go to parent step 1 (child details)
-  goToParentStep1Buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      showView('parent-flow');
-      // Navigate to step 1
-      setTimeout(() => {
-        const form = document.getElementById('parent-form');
-        if (form) {
-          navigateToStep('parent', 1, form);
-        }
-      }, 100);
-    });
-  });
-
-  // Back to home
-  backHomeButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const view = btn.getAttribute('data-view') || 'landing';
-      showView(view);
-    });
-  });
-}
-
-function showView(viewId) {
-  const views = document.querySelectorAll('.view');
-  views.forEach(view => {
-    view.classList.toggle('active', view.id === viewId);
-  });
-  
-  AppState.currentView = viewId;
-  saveStateToStorage();
-  
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  
-  showToast(`עברת ל${getViewName(viewId)}`, 'info');
-}
-
-function getViewName(viewId) {
-  const names = {
-    'landing': 'דף הבית',
-    'parent-flow': 'זרימת הורים',
-    'therapist-flow': 'זרימת מטפלים',
-    'insurance': 'מודול ביטוח',
-    'demo-center': 'מסכי דמו'
-  };
-  return names[viewId] || viewId;
 }
 
 // ============================================
@@ -214,15 +141,13 @@ function initializeParentFlow() {
   const notRelevantMsg = document.getElementById('not-relevant-msg');
   if (notRelevantBtn && notRelevantMsg) {
     notRelevantBtn.addEventListener('click', () => {
-      notRelevantMsg.classList.add('visible');
-      showToast('תודה על המשוב! נשתפר', 'info');
+      notRelevantMsg.style.display = 'block';
+      setTimeout(() => {
+        notRelevantMsg.style.display = 'none';
+      }, 5000);
     });
   }
   
-  // Result cards actions
-  setupResultCards();
-  
-  // Update progress
   updateParentProgress();
 }
 
@@ -233,8 +158,8 @@ function setupStepNavigation(flowType, form) {
   nextButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const nextStep = parseInt(btn.getAttribute('data-next'));
-      if (validateCurrentStep(flowType, AppState[`${flowType}Data`].step)) {
-        goToStep(flowType, nextStep);
+      if (nextStep) {
+        navigateToStep(flowType, nextStep, form);
       }
     });
   });
@@ -242,346 +167,60 @@ function setupStepNavigation(flowType, form) {
   prevButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const prevStep = parseInt(btn.getAttribute('data-prev'));
-      goToStep(flowType, prevStep);
-    });
-  });
-  
-  // Make stepper items clickable
-  const stepperItems = form.closest('.view').querySelectorAll('.stepper-item[data-step]');
-  stepperItems.forEach(item => {
-    item.style.cursor = 'pointer';
-    item.addEventListener('click', () => {
-      const targetStep = parseInt(item.getAttribute('data-step'));
-      const currentStep = AppState[`${flowType}Data`].step;
-      
-      // Allow going back to previous steps, but validate before going forward
-      if (targetStep < currentStep) {
-        goToStep(flowType, targetStep);
-      } else if (targetStep === currentStep) {
-        // Already on this step, do nothing
-        return;
-      } else {
-        // Going forward - validate all steps in between
-        let canProceed = true;
-        for (let step = currentStep; step < targetStep; step++) {
-          if (!validateCurrentStep(flowType, step)) {
-            canProceed = false;
-            showToast('נא למלא את כל השדות הנדרשים', 'warning');
-            break;
-          }
-        }
-        if (canProceed) {
-          goToStep(flowType, targetStep);
-        }
+      if (prevStep) {
+        navigateToStep(flowType, prevStep, form);
       }
     });
   });
 }
 
-function goToStep(flowType, stepNumber) {
-  const panels = document.querySelectorAll(`#${flowType}-form .step-panel`);
-  const stepperItems = document.querySelectorAll(`.stepper-item[data-step]`);
+function navigateToStep(flowType, step, form) {
+  const panels = form.querySelectorAll('.step-panel');
   
   panels.forEach(panel => {
     const panelStep = parseInt(panel.getAttribute('data-step'));
-    panel.classList.toggle('active', panelStep === stepNumber);
+    panel.classList.toggle('active', panelStep === step);
   });
-  
-  stepperItems.forEach(item => {
-    const itemStep = parseInt(item.getAttribute('data-step'));
-    item.classList.toggle('active', itemStep === stepNumber);
-  });
-  
-  AppState[`${flowType}Data`].step = stepNumber;
-  saveStateToStorage();
   
   if (flowType === 'parent') {
+    AppState.parentData.step = step;
     updateParentProgress();
   } else if (flowType === 'therapist') {
+    AppState.therapistData.step = step;
     updateTherapistProgress();
   }
   
+  saveStateToStorage();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function validateCurrentStep(flowType, step) {
-  const form = document.getElementById(`${flowType}-form`);
-  const panel = form.querySelector(`.step-panel[data-step="${step}"]`);
-  
-  if (!panel) return true;
-  
-  const requiredFields = panel.querySelectorAll('[required]');
-  let isValid = true;
-  
-  requiredFields.forEach(field => {
-    if (!field.value.trim()) {
-      isValid = false;
-      showFieldError(field, 'שדה חובה');
-    } else {
-      hideFieldError(field);
-    }
-  });
-  
-  if (!isValid) {
-    showToast('אנא מלאו את כל השדות הנדרשים', 'error');
-  }
-  
-  return isValid;
-}
-
-function showFieldError(field, message) {
-  const fieldName = field.getAttribute('name');
-  const errorEl = document.querySelector(`.field-error[data-field="${fieldName}"]`);
-  
-  if (errorEl) {
-    errorEl.textContent = message;
-    errorEl.classList.add('visible');
-  }
-  
-  field.style.borderColor = 'var(--error)';
-}
-
-function hideFieldError(field) {
-  const fieldName = field.getAttribute('name');
-  const errorEl = document.querySelector(`.field-error[data-field="${fieldName}"]`);
-  
-  if (errorEl) {
-    errorEl.classList.remove('visible');
-  }
-  
-  field.style.borderColor = '';
-}
-
 function updateParentProgress() {
+  const currentStep = AppState.parentData.step;
+  const totalSteps = 4;
+  const progress = (currentStep / totalSteps) * 100;
+  
   const progressFill = document.getElementById('parentProgress');
   const progressText = document.getElementById('parentProgressText');
   
-  if (!progressFill || !progressText) return;
-  
-  const step = AppState.parentData.step;
-  const total = 4;
-  const percentage = (step / total) * 100;
-  
-  progressFill.style.width = `${percentage}%`;
-  progressText.textContent = `שלב ${step} מתוך ${total}`;
-}
-
-function setupSubSpecialties() {
-  const mainTreatment = document.getElementById('main-treatment');
-  const subSpecialty = document.getElementById('sub-specialty');
-  
-  if (!mainTreatment || !subSpecialty) return;
-  
-  const subSpecialtiesMap = {
-    speech: [
-      'עיכוב שפתי',
-      'גמגום',
-      'קשיי היגוי',
-      'עיבוד שמיעתי',
-      'תקשורת חברתית',
-      'הזנה ואכילה',
-      'תקשורת תומכת וחליפית (AAC)'
-    ],
-    ot: [
-      'ויסות חושי',
-      'מוטוריקה עדינה',
-      'מוטוריקה גסה',
-      'גרפומוטוריקה',
-      'תפקודי יום-יום (ADL)',
-      'עבודה עם ASD',
-      'מיומנויות כיתה א׳'
-    ],
-    physio: [
-      'פיזיותרפיה תינוקות',
-      'פיזיותרפיה נשימתית',
-      'פציעות ספורט ילדים',
-      'שיקום לאחר פגיעה',
-      'טיפול ביציבה'
-    ],
-    emotional: [
-      'טיפול במשחק',
-      'טיפול באמצעות אמנות',
-      'ויסות רגשי',
-      'חרדות ילדים',
-      'טיפול דיאדי הורה-ילד'
-    ],
-    psychology: [
-      'פסיכולוגיה התפתחותית',
-      'פסיכולוגיה חינוכית',
-      'CBT לילדים',
-      'טיפול משפחתי',
-      'טיפול בנוער עם חרדה'
-    ]
-  };
-  
-  mainTreatment.addEventListener('change', () => {
-    const key = mainTreatment.value;
-    const options = subSpecialtiesMap[key] || [];
-    
-    subSpecialty.innerHTML = '<option value="">בחרו תת-התמחות (אופציונלי)</option>';
-    
-    options.forEach(opt => {
-      const option = document.createElement('option');
-      option.value = opt;
-      option.textContent = opt;
-      subSpecialty.appendChild(option);
-    });
-  });
-}
-
-function setupChips(form) {
-  const chipGroups = form.querySelectorAll('.chip-group');
-  
-  chipGroups.forEach(group => {
-    const name = group.getAttribute('data-name');
-    if (!name) return;
-    
-    const hiddenInput = form.querySelector(`input[name="${name}"]`);
-    if (!hiddenInput) return;
-    
-    const chips = group.querySelectorAll('.chip');
-    
-    chips.forEach(chip => {
-      chip.addEventListener('click', (e) => {
-        e.preventDefault();
-        chip.classList.toggle('active');
-        
-        const activeChips = group.querySelectorAll('.chip.active');
-        const values = Array.from(activeChips).map(c => c.textContent.trim());
-        
-        hiddenInput.value = values.join('|');
-        
-        if (name === 'parent_preferences') {
-          AppState.parentData.preferences = values;
-        }
-        
-        saveStateToStorage();
-      });
-    });
-  });
-}
-
-function setupFileUpload(flowType) {
-  const uploadZone = document.getElementById(`${flowType === 'parent' ? 'upload-zone' : 'therapist-upload-zone'}`);
-  const fileInput = document.getElementById(`${flowType === 'parent' ? 'parent-docs' : 'therapist-certs'}`);
-  const uploadedFilesContainer = document.getElementById('uploaded-files');
-  
-  if (!uploadZone || !fileInput) return;
-  
-  // Click to upload
-  uploadZone.addEventListener('click', () => {
-    fileInput.click();
-  });
-  
-  // Drag and drop
-  uploadZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadZone.style.background = 'rgba(61, 123, 253, 0.1)';
-  });
-  
-  uploadZone.addEventListener('dragleave', () => {
-    uploadZone.style.background = '';
-  });
-  
-  uploadZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadZone.style.background = '';
-    
-    const files = e.dataTransfer.files;
-    handleFiles(files, flowType, uploadedFilesContainer);
-  });
-  
-  // File input change
-  fileInput.addEventListener('change', (e) => {
-    const files = e.target.files;
-    handleFiles(files, flowType, uploadedFilesContainer);
-  });
-}
-
-function handleFiles(files, flowType, container) {
-  if (!files || files.length === 0) return;
-  
-  Array.from(files).forEach(file => {
-    if (file.size > 10 * 1024 * 1024) { // 10MB limit
-      showToast(`הקובץ ${file.name} גדול מדי (מקסימום 10MB)`, 'error');
-      return;
-    }
-    
-    const fileItem = createFileItem(file, flowType);
-    if (container) {
-      container.appendChild(fileItem);
-    }
-    
-    if (flowType === 'parent') {
-      AppState.parentData.uploadedFiles.push({
-        name: file.name,
-        size: file.size,
-        type: file.type
-      });
-    }
-    
-    showToast(`הקובץ ${file.name} הועלה בהצלחה`, 'success');
-  });
-  
-  saveStateToStorage();
-}
-
-function createFileItem(file, flowType) {
-  const div = document.createElement('div');
-  div.className = 'uploaded-file';
-  
-  const fileIcon = getFileIcon(file.type);
-  const fileSize = formatFileSize(file.size);
-  
-  div.innerHTML = `
-    <div class="file-info">
-      <span class="file-icon">${fileIcon}</span>
-      <div>
-        <div class="file-name">${file.name}</div>
-        <div class="file-size" style="font-size: 12px; color: var(--text-muted);">${fileSize}</div>
-      </div>
-    </div>
-    <button type="button" class="file-remove">הסר</button>
-  `;
-  
-  const removeBtn = div.querySelector('.file-remove');
-  removeBtn.addEventListener('click', () => {
-    div.remove();
-    showToast(`הקובץ ${file.name} הוסר`, 'info');
-  });
-  
-  return div;
-}
-
-function getFileIcon(mimeType) {
-  if (mimeType.startsWith('image/')) return '🖼️';
-  if (mimeType.includes('pdf')) return '📄';
-  if (mimeType.includes('word') || mimeType.includes('document')) return '📝';
-  return '📎';
-}
-
-function formatFileSize(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  if (progressFill) progressFill.style.width = `${progress}%`;
+  if (progressText) progressText.textContent = `שלב ${currentStep} מתוך ${totalSteps}`;
 }
 
 function validateParentForm() {
-  const form = document.getElementById('parent-form');
-  const requiredFields = form.querySelectorAll('[required]');
+  const childName = document.getElementById('child-name');
+  const childAge = document.getElementById('child-age');
   
-  let isValid = true;
+  if (!childName || !childName.value.trim()) {
+    showToast('נא למלא את שם הילד/ה', 'error');
+    return false;
+  }
   
-  requiredFields.forEach(field => {
-    if (!field.value.trim()) {
-      isValid = false;
-      showFieldError(field, 'שדה חובה');
-    } else {
-      hideFieldError(field);
-    }
-  });
+  if (!childAge || !childAge.value) {
+    showToast('נא למלא את גיל הילד/ה', 'error');
+    return false;
+  }
   
-  return isValid;
+  return true;
 }
 
 function showParentResults() {
@@ -601,8 +240,6 @@ function showParentResults() {
   // Simulate loading
   setTimeout(() => {
     animateResults();
-    // Initialize modal buttons after results are shown
-    initializeResultModals();
   }, 300);
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -637,17 +274,21 @@ function resetParentForm() {
   
   if (!form || !resultsPanel) return;
   
-  form.reset();
-  resultsPanel.classList.remove('active');
+  // Reset form
+  const formElement = form.querySelector('form');
+  if (formElement) formElement.reset();
   
-  goToStep('parent', 1);
-  
+  // Reset state
   AppState.parentData = {
     step: 1,
     formData: {},
     preferences: [],
     uploadedFiles: []
   };
+  
+  // Hide results and show step 1
+  resultsPanel.classList.remove('active');
+  navigateToStep('parent', 1, form);
   
   saveStateToStorage();
 }
@@ -660,35 +301,36 @@ function initializeTherapistFlow() {
   const form = document.getElementById('therapist-form');
   if (!form) return;
   
+  // Step navigation
   setupStepNavigation('therapist', form);
-  setupChips(form);
+  
+  // File upload
   setupFileUpload('therapist');
   setupTherapistSubSpecialties(form); // Add dynamic sub-specializations
   initializeScheduleManager(); // Add weekly schedule manager
   
-  // Primary handler: form submit
+  // Primary: Form submit event
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('✅ Therapist form submitted via submit event!');
+    console.log('✅ Therapist form submitted!');
     showTherapistSuccess();
   });
   
-  // Backup handler: direct button click
+  // Backup: Direct button click handler
   setTimeout(() => {
-    const submitButtons = form.querySelectorAll('button[type="submit"]');
-    submitButtons.forEach(btn => {
+    const submitBtns = form.querySelectorAll('button[type="submit"]');
+    submitBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
         const step4 = form.querySelector('.step-panel[data-step="4"]');
         if (step4 && step4.classList.contains('active')) {
           e.preventDefault();
-          e.stopPropagation();
-          console.log('✅ Therapist registration completed via button!');
+          console.log('✅ Therapist submit clicked!');
           showTherapistSuccess();
         }
       });
     });
-  }, 500);
+  }, 300);
   
   updateTherapistProgress();
 }
@@ -696,229 +338,173 @@ function initializeTherapistFlow() {
 function setupTherapistSubSpecialties(form) {
   // Configuration
   const specializationsData = {
-    'קלינאות תקשורת': {
-      icon: '🗣️',
-      subs: ['עיכוב שפתי', 'גמגום', 'קשיי היגוי', 'עיבוד שמיעתי', 'תקשורת חברתית', 'הזנה ואכילה', 'תקשורת תומכת וחליפית (AAC)']
-    },
-    'ריפוי בעיסוק': {
-      icon: '✋',
-      subs: ['ויסות חושי', 'מוטוריקה עדינה', 'מוטוריקה גסה', 'גרפומוטוריקה', 'תפקודי יום-יום (ADL)', 'עבודה עם ASD', 'מיומנויות כיתה א׳']
-    },
-    'פיזיותרפיה': {
-      icon: '🏃',
-      subs: ['פיזיותרפיה תינוקות', 'פיזיותרפיה נשימתית', 'פציעות ספורט ילדים', 'שיקום לאחר פגיעה', 'טיפול ביציבה']
-    },
-    'טיפול רגשי': {
-      icon: '💭',
-      subs: ['טיפול במשחק', 'טיפול באמצעות אמנות', 'ויסות רגשי', 'חרדות ילדים', 'טיפול דיאדי הורה-ילד']
-    },
-    'פסיכולוגיה': {
-      icon: '🧠',
-      subs: ['פסיכולוגיה התפתחותית', 'פסיכולוגיה חינוכית', 'CBT לילדים', 'טיפול משפחתי', 'טיפול בנוער עם חרדה']
-    }
+    'ריפוי בעיסוק': [
+      'שילוב חושי',
+      'מיומנויות חברתיות',
+      'מיומנויות גרפו-מוטוריות',
+      'פיתוח עצמאות',
+      'קשיי אכילה',
+      'קשיים חושיים',
+      'קשיי ויסות'
+    ],
+    'קלינאות תקשורת': [
+      'עיכוב שפתי',
+      'גמגום',
+      'קושי בהיגוי',
+      'תקשורת חברתית-פרגמטית',
+      'AAC - תקשורת תומכת',
+      'קושי בהבנה',
+      'בליעה'
+    ],
+    'פיזיותרפיה': [
+      'התפתחות מוטורית',
+      'שיקום אורטופדי',
+      'שיווי משקל ותנועה',
+      'כאבי גב וצוואר',
+      'ספורט וטראומה',
+      'נוירו-פיזיותרפיה'
+    ],
+    'פסיכולוגיה': [
+      'חרדות ופחדים',
+      'דימוי עצמי',
+      'קשיי התנהגות',
+      'גירושין והפרדה',
+      'טראומה',
+      'ADD/ADHD',
+      'אוטיזם',
+      'הדרכת הורים'
+    ],
+    'ייעוץ חינוכי': [
+      'קשיי למידה',
+      'ארגון וניהול זמן',
+      'קשב וריכוז',
+      'מוטיבציה ללמידה',
+      'חרדת מבחנים',
+      'מעבר לכיתה א׳',
+      'קשיי הסתגלות'
+    ]
   };
 
-  const container = document.getElementById('specializations-container');
-  const addBtn = document.getElementById('add-specialization-btn');
+  // Find all specialization blocks
+  const specBlocks = form.querySelectorAll('[data-spec-block]');
   
-  if (!container || !addBtn) return;
-
-  let specializationCount = 0;
-  const maxSpecializations = 3;
-  const selectedMainFields = new Set();
-
-  // Initialize with first specialization
-  addSpecializationBlock();
-
-  // Add button click handler
-  addBtn.addEventListener('click', () => {
-    if (specializationCount < maxSpecializations) {
-      addSpecializationBlock();
-    }
-  });
-
-  function addSpecializationBlock() {
-    specializationCount++;
-    const blockId = `spec-block-${specializationCount}`;
+  specBlocks.forEach((block, blockIndex) => {
+    const mainFieldSelect = block.querySelector('.main-field-select');
+    const subFieldsContainer = block.querySelector('.sub-fields-chips');
     
-    const block = document.createElement('div');
-    block.className = 'specialization-block';
-    block.id = blockId;
-    block.setAttribute('data-block-number', specializationCount);
-
-    block.innerHTML = `
-      <div class="specialization-header">
-        <span class="specialization-number">${specializationCount}</span>
-        ${specializationCount > 1 ? '<button type="button" class="remove-specialization-btn" title="הסר התמחות">✕</button>' : ''}
-      </div>
-
-      <div class="main-field-selector">
-        <label>בחר תחום טיפול עיקרי ${specializationCount === 1 ? '<span class="field-required">*</span>' : ''}</label>
-        <div class="main-field-chips" data-block-id="${blockId}">
-          ${Object.keys(specializationsData).map(field => `
-            <button type="button" class="main-field-chip" data-field="${field}">
-              <span class="chip-icon">${specializationsData[field].icon}</span>
-              <span>${field}</span>
-            </button>
-          `).join('')}
-        </div>
-      </div>
-
-      <div class="sub-fields-container" id="${blockId}-subs">
-        <label>בחר תתי-התמחויות (אופציונלי)</label>
-        <div class="sub-field-chips"></div>
-      </div>
-    `;
-
-    container.appendChild(block);
-
-    // Setup main field selection
-    const mainFieldChips = block.querySelectorAll('.main-field-chip');
-    mainFieldChips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        const field = chip.getAttribute('data-field');
-        
-        // Deselect other chips in this block
-        mainFieldChips.forEach(c => c.classList.remove('selected'));
-        
-        // Select this chip
-        chip.classList.add('selected');
-        
-        // Update selected fields tracking
-        const previousField = block.getAttribute('data-selected-field');
-        if (previousField) {
-          selectedMainFields.delete(previousField);
-        }
-        selectedMainFields.add(field);
-        block.setAttribute('data-selected-field', field);
-        
-        // Show sub-specializations
-        showSubSpecializations(blockId, field);
-        
-        // Update disabled states
-        updateDisabledFields();
-        
-        // Update hidden inputs
-        updateHiddenInputs();
-      });
-    });
-
-    // Setup remove button
-    if (specializationCount > 1) {
-      const removeBtn = block.querySelector('.remove-specialization-btn');
-      removeBtn.addEventListener('click', () => {
-        const selectedField = block.getAttribute('data-selected-field');
-        if (selectedField) {
-          selectedMainFields.delete(selectedField);
-        }
-        block.remove();
-        specializationCount--;
-        updateAddButtonState();
-        renumberBlocks();
-        updateDisabledFields();
-        updateHiddenInputs();
-      });
-    }
-
-    updateAddButtonState();
-    updateDisabledFields();
-  }
-
-  function showSubSpecializations(blockId, field) {
-    const subsContainer = document.getElementById(`${blockId}-subs`);
-    if (!subsContainer) return;
-
-    const subsChipsContainer = subsContainer.querySelector('.sub-field-chips');
-    const subs = specializationsData[field].subs;
-
-    // Clear existing
-    subsChipsContainer.innerHTML = '';
-
-    // Add sub-specialization chips
-    subs.forEach(sub => {
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = 'sub-field-chip';
-      chip.textContent = sub;
-      chip.setAttribute('data-sub', sub);
-      
-      chip.addEventListener('click', () => {
-        chip.classList.toggle('active');
-        updateHiddenInputs();
-      });
-      
-      subsChipsContainer.appendChild(chip);
-    });
-
-    // Show container
-    subsContainer.classList.add('visible');
-  }
-
-  function updateDisabledFields() {
-    const allMainChips = container.querySelectorAll('.main-field-chip');
+    if (!mainFieldSelect || !subFieldsContainer) return;
     
-    allMainChips.forEach(chip => {
-      const field = chip.getAttribute('data-field');
-      const block = chip.closest('.specialization-block');
-      const blockSelectedField = block.getAttribute('data-selected-field');
+    mainFieldSelect.addEventListener('change', () => {
+      const selectedField = mainFieldSelect.value;
+      subFieldsContainer.innerHTML = '';
       
-      // Disable if selected in another block
-      if (selectedMainFields.has(field) && blockSelectedField !== field) {
-        chip.classList.add('disabled');
-      } else {
-        chip.classList.remove('disabled');
+      if (selectedField && specializationsData[selectedField]) {
+        const subFields = specializationsData[selectedField];
+        
+        subFields.forEach(subField => {
+          const chip = document.createElement('label');
+          chip.className = 'chip';
+          chip.innerHTML = `
+            <input type="checkbox" name="therapist-subfield-${blockIndex}" value="${subField}">
+            <span>${subField}</span>
+          `;
+          subFieldsContainer.appendChild(chip);
+        });
       }
     });
-  }
+  });
+}
 
-  function updateAddButtonState() {
-    addBtn.disabled = specializationCount >= maxSpecializations;
-    if (specializationCount >= maxSpecializations) {
-      addBtn.textContent = 'הגעת למקסימום 3 התמחויות';
-    } else {
-      addBtn.innerHTML = '<span class="btn-icon">+</span> הוסף התמחות נוספת';
-    }
-  }
-
-  function renumberBlocks() {
-    const blocks = container.querySelectorAll('.specialization-block');
-    blocks.forEach((block, index) => {
-      const number = index + 1;
-      block.setAttribute('data-block-number', number);
-      const numberSpan = block.querySelector('.specialization-number');
-      if (numberSpan) numberSpan.textContent = number;
+function initializeScheduleManager() {
+  const scheduleBtn = document.getElementById('open-schedule-manager');
+  const scheduleContainer = document.getElementById('schedule-manager-container');
+  const closeScheduleBtn = document.getElementById('close-schedule-manager');
+  const saveScheduleBtn = document.getElementById('save-schedule');
+  
+  if (!scheduleBtn || !scheduleContainer) return;
+  
+  scheduleBtn.addEventListener('click', () => {
+    scheduleContainer.style.display = 'block';
+    createWeeklySchedule();
+  });
+  
+  if (closeScheduleBtn) {
+    closeScheduleBtn.addEventListener('click', () => {
+      scheduleContainer.style.display = 'none';
     });
   }
-
-  function updateHiddenInputs() {
-    const mainFieldsArray = Array.from(selectedMainFields);
-    const mainFieldsInput = document.getElementById('therapist_main_fields_hidden');
-    if (mainFieldsInput) {
-      mainFieldsInput.value = mainFieldsArray.join('|');
-    }
-
-    // Collect all selected sub-fields
-    const allActiveSubChips = container.querySelectorAll('.sub-field-chip.active');
-    const subFieldsArray = Array.from(allActiveSubChips).map(chip => chip.getAttribute('data-sub'));
-    const subFieldsInput = document.getElementById('therapist_sub_fields_hidden');
-    if (subFieldsInput) {
-      subFieldsInput.value = subFieldsArray.join('|');
-    }
+  
+  if (saveScheduleBtn) {
+    saveScheduleBtn.addEventListener('click', () => {
+      saveScheduleData();
+      scheduleContainer.style.display = 'none';
+      showToast('הזמנים נשמרו בהצלחה', 'success');
+    });
   }
 }
 
+function createWeeklySchedule() {
+  const scheduleGrid = document.getElementById('weekly-schedule-grid');
+  if (!scheduleGrid) return;
+  
+  scheduleGrid.innerHTML = '';
+  
+  const days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+  const times = ['08:00-10:00', '10:00-12:00', '12:00-14:00', '14:00-16:00', '16:00-18:00', '18:00-20:00'];
+  
+  days.forEach(day => {
+    const dayColumn = document.createElement('div');
+    dayColumn.className = 'day-column';
+    
+    const dayHeader = document.createElement('div');
+    dayHeader.className = 'day-header';
+    dayHeader.textContent = day;
+    dayColumn.appendChild(dayHeader);
+    
+    times.forEach(time => {
+      const timeSlot = document.createElement('div');
+      timeSlot.className = 'time-slot';
+      timeSlot.textContent = time;
+      timeSlot.dataset.day = day;
+      timeSlot.dataset.time = time;
+      
+      timeSlot.addEventListener('click', () => {
+        timeSlot.classList.toggle('selected');
+      });
+      
+      dayColumn.appendChild(timeSlot);
+    });
+    
+    scheduleGrid.appendChild(dayColumn);
+  });
+}
+
+function saveScheduleData() {
+  const selectedSlots = document.querySelectorAll('.time-slot.selected');
+  const schedule = {};
+  
+  selectedSlots.forEach(slot => {
+    const day = slot.dataset.day;
+    const time = slot.dataset.time;
+    
+    if (!schedule[day]) schedule[day] = [];
+    schedule[day].push(time);
+  });
+  
+  AppState.therapistData.weeklySchedule = schedule;
+  saveStateToStorage();
+}
+
 function updateTherapistProgress() {
+  const currentStep = AppState.therapistData.step;
+  const totalSteps = 4;
+  const progress = (currentStep / totalSteps) * 100;
+  
   const progressFill = document.getElementById('therapistProgress');
   const progressText = document.getElementById('therapistProgressText');
   
-  if (!progressFill || !progressText) return;
-  
-  const step = AppState.therapistData.step;
-  const total = 4;
-  const percentage = (step / total) * 100;
-  
-  progressFill.style.width = `${percentage}%`;
-  progressText.textContent = `שלב ${step} מתוך ${total}`;
+  if (progressFill) progressFill.style.width = `${progress}%`;
+  if (progressText) progressText.textContent = `שלב ${currentStep} מתוך ${totalSteps}`;
 }
 
 function showTherapistSuccess() {
@@ -961,65 +547,155 @@ function initializeInsuranceModule() {
     }
     
     policyFileInput.addEventListener('change', () => {
-      if (policyFileInput.files && policyFileInput.files.length > 0) {
-        const file = policyFileInput.files[0];
-        policyStatus.textContent = `הקובץ "${file.name}" נטען בהצלחה ✅`;
+      if (policyFileInput.files.length > 0) {
+        const fileName = policyFileInput.files[0].name;
+        policyStatus.textContent = `קובץ נבחר: ${fileName}`;
         policyStatus.style.color = 'var(--success)';
-        showToast('פוליסה הועלתה', 'success');
-      } else {
-        policyStatus.textContent = 'לא הועלה קובץ';
-        policyStatus.style.color = '';
+        
+        if (analyzePolicyBtn) {
+          analyzePolicyBtn.disabled = false;
+        }
       }
     });
   }
   
   // Analyze policy button
   if (analyzePolicyBtn && policyAnalysisBox) {
-    policyAnalysisBox.style.display = 'none';
-    
     analyzePolicyBtn.addEventListener('click', () => {
       if (!aiConsent || !aiConsent.checked) {
-        showToast('יש לסמן הסכמה לניתוח הפוליסה', 'error');
+        showToast('נא לאשר את השימוש ב-AI לניתוח הפוליסה', 'warning');
         return;
       }
       
-      if (!policyFileInput || !policyFileInput.files || policyFileInput.files.length === 0) {
-        showToast('יש להעלות קובץ פוליסה תחילה', 'error');
-        return;
-      }
-      
-      // Show loading state
+      analyzePolicyBtn.textContent = 'מנתח...';
       analyzePolicyBtn.disabled = true;
-      analyzePolicyBtn.innerHTML = '<span class="btn-icon">⏳</span> מנתח...';
       
-      // Simulate analysis
       setTimeout(() => {
         policyAnalysisBox.style.display = 'block';
-        policyAnalysisBox.classList.add('visible');
-        analyzePolicyBtn.disabled = false;
-        analyzePolicyBtn.innerHTML = '<span class="btn-icon">✅</span> ניתוח הושלם';
-        showToast('ניתוח הפוליסה הושלם! 📊', 'success');
-        
-        policyAnalysisBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 2500);
+        analyzePolicyBtn.textContent = 'ניתוח הושלם ✓';
+        showToast('הפוליסה נותחה בהצלחה', 'success');
+      }, 2000);
     });
   }
+}
+
+// ============================================
+// Chips (Multi-select)
+// ============================================
+
+function setupChips(form) {
+  const chips = form.querySelectorAll('.chip input[type="checkbox"]');
   
-  // No policy form
-  const noPolicyForm = document.getElementById('no-policy-form');
-  const noPolicySuccess = document.getElementById('no-policy-success');
+  chips.forEach(chip => {
+    chip.addEventListener('change', () => {
+      const parent = chip.closest('.chip');
+      if (parent) {
+        parent.classList.toggle('chip-selected', chip.checked);
+      }
+    });
+  });
+}
+
+// ============================================
+// Sub-Specialties (Dynamic)
+// ============================================
+
+function setupSubSpecialties() {
+  const mainFieldSelect = document.getElementById('therapy-field');
+  const subFieldsContainer = document.getElementById('sub-fields');
   
-  if (noPolicyForm && noPolicySuccess) {
-    noPolicySuccess.style.display = 'none';
+  if (!mainFieldSelect || !subFieldsContainer) return;
+  
+  const subFieldsData = {
+    'ריפוי בעיסוק': ['שילוב חושי', 'מיומנויות חברתיות', 'מיומנויות גרפו-מוטוריות', 'פיתוח עצמאות'],
+    'קלינאות תקשורת': ['עיכוב שפתי', 'גמגום', 'קושי בהיגוי', 'תקשורת חברתית'],
+    'פיזיותרפיה': ['התפתחות מוטורית', 'שיקום אורטופדי', 'שיווי משקל ותנועה'],
+    'פסיכולוגיה': ['חרדות ופחדים', 'דימוי עצמי', 'קשיי התנהגות', 'ADD/ADHD'],
+    'ייעוץ חינוכי': ['קשיי למידה', 'ארגון וניהול זמן', 'קשב וריכוז']
+  };
+  
+  mainFieldSelect.addEventListener('change', () => {
+    const selectedField = mainFieldSelect.value;
+    subFieldsContainer.innerHTML = '';
     
-    noPolicyForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      noPolicyForm.style.display = 'none';
-      noPolicySuccess.style.display = 'block';
-      noPolicySuccess.classList.add('visible');
-      showToast('הבקשה נשלחה בהצלחה! נחזור אליכם בקרוב', 'success');
-    });
+    if (selectedField && subFieldsData[selectedField]) {
+      const subFields = subFieldsData[selectedField];
+      
+      subFields.forEach(subField => {
+        const chip = document.createElement('label');
+        chip.className = 'chip';
+        chip.innerHTML = `
+          <input type="checkbox" name="sub-field" value="${subField}">
+          <span>${subField}</span>
+        `;
+        subFieldsContainer.appendChild(chip);
+      });
+      
+      setupChips(subFieldsContainer.closest('form'));
+    }
+  });
+}
+
+// ============================================
+// File Upload
+// ============================================
+
+function setupFileUpload(flowType) {
+  const uploadZone = document.getElementById(`${flowType}-upload-zone`);
+  const fileInput = document.getElementById(`${flowType}-file-input`);
+  const fileStatus = document.getElementById(`${flowType}-file-status`);
+  
+  if (!uploadZone || !fileInput) return;
+  
+  uploadZone.addEventListener('click', () => {
+    fileInput.click();
+  });
+  
+  uploadZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadZone.style.borderColor = 'var(--primary)';
+    uploadZone.style.background = 'rgba(61, 123, 253, 0.05)';
+  });
+  
+  uploadZone.addEventListener('dragleave', () => {
+    uploadZone.style.borderColor = '';
+    uploadZone.style.background = '';
+  });
+  
+  uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.style.borderColor = '';
+    uploadZone.style.background = '';
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFileUpload(files, flowType, fileStatus);
+    }
+  });
+  
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) {
+      handleFileUpload(fileInput.files, flowType, fileStatus);
+    }
+  });
+}
+
+function handleFileUpload(files, flowType, statusElement) {
+  const fileNames = Array.from(files).map(f => f.name).join(', ');
+  
+  if (statusElement) {
+    statusElement.textContent = `קבצים נבחרו: ${fileNames}`;
+    statusElement.style.color = 'var(--success)';
   }
+  
+  if (flowType === 'parent') {
+    AppState.parentData.uploadedFiles = Array.from(files).map(f => f.name);
+  } else if (flowType === 'therapist') {
+    AppState.therapistData.uploadedFiles = Array.from(files).map(f => f.name);
+  }
+  
+  saveStateToStorage();
+  showToast(`${files.length} קבצים הועלו בהצלחה`, 'success');
 }
 
 // ============================================
@@ -1027,361 +703,90 @@ function initializeInsuranceModule() {
 // ============================================
 
 function initializeAutocomplete() {
-  const cities = [
-    'אילת', 'אשדוד', 'אשקלון', 'באר שבע', 'בת ים', 'גבעתיים',
-    'הרצליה', 'חדרה', 'חולון', 'חיפה', 'טבריה', 'יבנה', 'יהוד',
-    'ירושלים', 'כפר סבא', 'כרמיאל', 'מודיעין', 'נס ציונה',
-    'נהריה', 'נתניה', 'עפולה', 'פתח תקווה', 'צפת', 'קריית אונו',
-    'קריית גת', 'קריית שמונה', 'ראש העין', 'ראשון לציון',
-    'רחובות', 'רמלה', 'רמת גן', 'רעננה', 'תל אביב'
+  const locationInput = document.getElementById('location');
+  if (!locationInput) return;
+  
+  const israelCities = [
+    'תל אביב-יפו', 'ירושלים', 'חיפה', 'ראשון לציון', 'פתח תקווה',
+    'אשדוד', 'נתניה', 'באר שבע', 'בני ברק', 'חולון',
+    'רמת גן', 'אשקלון', 'רחובות', 'בת ים', 'כפר סבא',
+    'הרצליה', 'חדרה', 'מודיעין', 'נצרת', 'לוד',
+    'רעננה', 'רמלה', 'קריית אתא', 'גבעתיים', 'קריית גת'
   ];
   
-  const inputs = document.querySelectorAll('input[data-autocomplete="city"]');
-  
-  inputs.forEach(input => {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'autocomplete-wrapper';
-    wrapper.style.position = 'relative';
+  locationInput.addEventListener('input', () => {
+    const value = locationInput.value.toLowerCase();
     
-    const parent = input.parentElement;
-    if (!parent) return;
+    if (value.length < 2) return;
     
-    parent.replaceChild(wrapper, input);
-    wrapper.appendChild(input);
+    const matches = israelCities.filter(city => 
+      city.toLowerCase().includes(value)
+    );
     
-    const list = document.createElement('div');
-    list.className = 'autocomplete-list';
-    list.style.display = 'none';
-    list.style.position = 'absolute';
-    list.style.top = '100%';
-    list.style.right = '0';
-    list.style.left = '0';
-    list.style.background = 'white';
-    list.style.border = '1px solid var(--border-light)';
-    list.style.borderRadius = 'var(--radius-md)';
-    list.style.boxShadow = 'var(--shadow-lg)';
-    list.style.maxHeight = '200px';
-    list.style.overflowY = 'auto';
-    list.style.zIndex = '100';
-    list.style.marginTop = '4px';
-    
-    wrapper.appendChild(list);
-    
-    input.addEventListener('input', () => {
-      const value = input.value.trim();
-      
-      if (!value) {
-        list.style.display = 'none';
-        return;
-      }
-      
-      const matches = cities.filter(city => 
-        city.includes(value) || city.toLowerCase().includes(value.toLowerCase())
-      );
-      
-      if (matches.length === 0) {
-        list.style.display = 'none';
-        return;
-      }
-      
-      list.innerHTML = '';
-      
-      matches.forEach(city => {
-        const item = document.createElement('div');
-        item.textContent = city;
-        item.style.padding = '10px 16px';
-        item.style.cursor = 'pointer';
-        item.style.fontSize = '14px';
-        item.style.transition = 'background var(--transition-fast)';
-        
-        item.addEventListener('mouseenter', () => {
-          item.style.background = 'var(--bg-soft)';
-        });
-        
-        item.addEventListener('mouseleave', () => {
-          item.style.background = '';
-        });
-        
-        item.addEventListener('click', () => {
-          input.value = city;
-          list.style.display = 'none';
-        });
-        
-        list.appendChild(item);
-      });
-      
-      list.style.display = 'block';
-    });
-    
-    document.addEventListener('click', (e) => {
-      if (!wrapper.contains(e.target)) {
-        list.style.display = 'none';
-      }
-    });
+    console.log('City matches:', matches);
   });
 }
 
 // ============================================
-// Toast Notifications
+// Toasts (Notifications)
 // ============================================
 
 function initializeToasts() {
-  // Toast container already in HTML
-  const container = document.getElementById('toastContainer');
-  if (!container) {
-    const newContainer = document.createElement('div');
-    newContainer.id = 'toastContainer';
-    newContainer.className = 'toast-container';
-    document.body.appendChild(newContainer);
+  // Toast container will be created on-demand
+  if (!document.getElementById('toast-container')) {
+    const container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
   }
 }
 
-function showToast(message, type = 'info', duration = 3000) {
-  const container = document.getElementById('toastContainer');
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
   if (!container) return;
   
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
   
   const icons = {
-    success: '✅',
-    error: '❌',
-    warning: '⚠️',
-    info: 'ℹ️'
+    'success': '✓',
+    'error': '✕',
+    'warning': '⚠',
+    'info': 'ℹ'
   };
   
   toast.innerHTML = `
     <span class="toast-icon">${icons[type] || icons.info}</span>
-    <div class="toast-content">
-      <div class="toast-message">${message}</div>
-    </div>
-    <button class="toast-close">×</button>
+    <span class="toast-message">${message}</span>
   `;
   
   container.appendChild(toast);
   
-  const closeBtn = toast.querySelector('.toast-close');
-  closeBtn.addEventListener('click', () => {
-    removeToast(toast);
-  });
+  setTimeout(() => toast.classList.add('toast-show'), 10);
   
   setTimeout(() => {
-    removeToast(toast);
-  }, duration);
-}
-
-function removeToast(toast) {
-  toast.style.opacity = '0';
-  toast.style.transform = 'translateX(100px)';
-  
-  setTimeout(() => {
-    toast.remove();
-  }, 300);
+    toast.classList.remove('toast-show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
 }
 
 // ============================================
-// Global Event Listeners
+// Global Listeners
 // ============================================
 
 function setupGlobalListeners() {
-  // Save state before unload
-  window.addEventListener('beforeunload', () => {
-    saveStateToStorage();
-  });
-  
-  // Handle form inputs
-  document.addEventListener('input', (e) => {
-    if (e.target.matches('input, select, textarea')) {
-      const form = e.target.closest('form');
-      if (!form) return;
+  // Handle stepper clicks
+  document.querySelectorAll('.stepper-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const step = parseInt(item.getAttribute('data-step'));
+      const flowType = item.closest('#parent-form') ? 'parent' : 'therapist';
+      const form = document.getElementById(`${flowType}-form`);
       
-      const flowType = form.id.includes('parent') ? 'parent' : 
-                       form.id.includes('therapist') ? 'therapist' : null;
-      
-      if (flowType) {
-        AppState[`${flowType}Data`].formData[e.target.name] = e.target.value;
-        saveStateToStorage();
+      if (step && form) {
+        navigateToStep(flowType, step, form);
       }
-    }
-  });
-  
-  // Smooth scroll for anchor links
-  document.addEventListener('click', (e) => {
-    if (e.target.matches('a[href^="#"]')) {
-      e.preventDefault();
-      const target = document.querySelector(e.target.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-  });
-}
-
-// ============================================
-// Utility Functions
-// ============================================
-
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
-function throttle(func, limit) {
-  let inThrottle;
-  return function(...args) {
-    if (!inThrottle) {
-      func.apply(this, args);
-      inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
-    }
-  };
-}
-
-// Export for debugging
-window.FlowMatch = {
-  AppState,
-  showView,
-  showToast,
-  goToStep,
-  resetParentForm
-};
-
-console.log('🚀 FlowMatch Enhanced System Ready!');
-
-// ============================================
-// Weekly Schedule Manager
-// ============================================
-
-function initializeScheduleManager() {
-  const openBtn = document.getElementById('open-schedule-manager');
-  const closeBtn = document.getElementById('close-schedule-manager');
-  const scheduleContainer = document.getElementById('schedule-manager');
-  const saveBtn = document.getElementById('save-schedule');
-  
-  if (!openBtn || !scheduleContainer) return;
-  
-  // Create weekly schedule on first open
-  let scheduleCreated = false;
-  
-  openBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    scheduleContainer.style.display = 'block';
-    
-    if (!scheduleCreated) {
-      createWeeklySchedule();
-      scheduleCreated = true;
-    }
-    
-    // Smooth scroll to schedule
-    setTimeout(() => {
-      scheduleContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 100);
-  });
-  
-  if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-      scheduleContainer.style.display = 'none';
     });
-  }
-  
-  if (saveBtn) {
-    saveBtn.addEventListener('click', () => {
-      saveScheduleData();
-      showToast('לוח הזמנים נשמר בהצלחה! 📅', 'success');
-      scheduleContainer.style.display = 'none';
-    });
-  }
-}
-
-function createWeeklySchedule() {
-  const weeklySchedule = document.querySelector('.weekly-schedule');
-  if (!weeklySchedule) return;
-  
-  const days = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
-  const timeSlots = [
-    '08:00-10:00',
-    '10:00-12:00',
-    '12:00-14:00',
-    '14:00-16:00',
-    '16:00-18:00',
-    '18:00-20:00'
-  ];
-  
-  weeklySchedule.innerHTML = '';
-  
-  days.forEach((day, dayIndex) => {
-    const dayColumn = document.createElement('div');
-    dayColumn.className = 'day-column';
-    dayColumn.setAttribute('data-day', dayIndex);
-    
-    const dayHeader = document.createElement('div');
-    dayHeader.className = 'day-header';
-    dayHeader.textContent = day;
-    
-    const timeSlotsContainer = document.createElement('div');
-    timeSlotsContainer.className = 'time-slots';
-    
-    timeSlots.forEach((time, timeIndex) => {
-      const slot = document.createElement('label');
-      slot.className = 'time-slot';
-      slot.setAttribute('data-time', timeIndex);
-      
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.name = `schedule_${dayIndex}_${timeIndex}`;
-      checkbox.value = time;
-      
-      const timeText = document.createElement('span');
-      timeText.textContent = time;
-      
-      slot.appendChild(checkbox);
-      slot.appendChild(timeText);
-      
-      // Toggle selected class on click
-      slot.addEventListener('click', () => {
-        slot.classList.toggle('selected');
-      });
-      
-      timeSlotsContainer.appendChild(slot);
-    });
-    
-    dayColumn.appendChild(dayHeader);
-    dayColumn.appendChild(timeSlotsContainer);
-    weeklySchedule.appendChild(dayColumn);
   });
-}
-
-function saveScheduleData() {
-  const selectedSlots = document.querySelectorAll('.time-slot.selected input[type="checkbox"]');
-  const scheduleData = {};
-  
-  selectedSlots.forEach(checkbox => {
-    const slot = checkbox.closest('.time-slot');
-    const dayColumn = slot.closest('.day-column');
-    const day = dayColumn.getAttribute('data-day');
-    const time = slot.getAttribute('data-time');
-    
-    if (!scheduleData[day]) {
-      scheduleData[day] = [];
-    }
-    scheduleData[day].push(checkbox.value);
-  });
-  
-  // Save to AppState
-  if (!AppState.therapistData) {
-    AppState.therapistData = {};
-  }
-  AppState.therapistData.weeklySchedule = scheduleData;
-  saveStateToStorage();
-  
-  console.log('✅ Schedule saved:', scheduleData);
 }
 
 // ============================================
@@ -1497,18 +902,19 @@ function generateBookingCalendar(therapistName) {
     const dayHeader = document.createElement('div');
     dayHeader.className = 'booking-day-header';
     dayHeader.textContent = day;
+    dayColumn.appendChild(dayHeader);
     
     const slotsContainer = document.createElement('div');
     slotsContainer.className = 'booking-slots';
     
-    times.forEach(time => {
+    times.forEach((time, timeIndex) => {
       const slot = document.createElement('div');
       
-      // Simulate some unavailable slots
-      const isUnavailable = Math.random() > 0.6;
+      // Simulate availability (60% available)
+      const isAvailable = Math.random() > 0.4;
       
-      if (isUnavailable) {
-        slot.className = 'booking-slot unavailable';
+      if (!isAvailable) {
+        slot.className = 'booking-slot booking-slot-unavailable';
         slot.textContent = time;
       } else {
         slot.className = 'booking-slot';
@@ -1612,10 +1018,10 @@ function openDetailsModal(therapistName) {
   
   if (!modal || !detailsContainer) return;
   
+  modal.classList.add('active');
+  
   // Generate full details
   detailsContainer.innerHTML = generateFullDetails(therapistName);
-  
-  modal.classList.add('active');
 }
 
 function closeDetailsModal() {
@@ -1631,142 +1037,201 @@ function generateFullDetails(therapistName) {
       experience: '15 שנות ניסיון',
       education: 'תואר שני בקלינאות תקשורת, אוניברסיטת תל אביב',
       specializations: ['עיכוב שפתי', 'גמגום', 'תקשורת חברתית', 'AAC'],
-      organizations: ['מכבי זהב', 'עמותת אלה', 'בתי ספר ברמת גן'],
-      location: 'רמת גן, תל אביב',
-      clinic: 'קליניקה נגישה, חנייה פרטית, משחקייה לילדים',
-      approach: 'גישה הוליסטית המשלבת משחק, אמנות ותקשורת. דגש על שיתוף הורים בתהליך.',
-      languages: 'עברית, אנגלית, רוסית',
-      pricing: '₪350-450 לפגישה'
+      organizations: ['קופת חולים כללית', 'מרכז תקשורת מתקדם'],
+      location: 'רחובות, מרכז',
+      approach: 'גישה הוליסטית המשלבת משחק, טכנולוגיה ושיתוף פעולה הדוק עם ההורים',
+      languages: ['עברית', 'אנגלית', 'רוסית'],
+      price: '320 ₪ לפגישה'
     },
     'ד״ר רון לוי': {
-      title: 'פסיכולוג קליני וחינוכי',
+      title: 'פסיכולוג התפתחותי',
       experience: '12 שנות ניסיון',
-      education: 'דוקטורט בפסיכולוגיה קלינית, אוניברסיטת חיפה',
-      specializations: ['CBT', 'ADHD', 'חרדות', 'טיפול משפחתי'],
-      organizations: ['קופת חולים כללית', 'משרד החינוך', 'יועץ ל-SHEKEL'],
-      location: 'חיפה, קריות',
-      clinic: 'חדרי טיפול שקטים, נגיש למוגבלות, טיפול אונליין זמין',
-      approach: 'שילוב CBT וטיפול התנהגותי-רגשי מותאם גיל. דגש על כלים מעשיים.',
-      languages: 'עברית, אנגלית',
-      pricing: '₪400-500 לפגישה'
+      education: 'דוקטורט בפסיכולוגיה התפתחותית, אוניברסיטת בר אילן',
+      specializations: ['חרדות', 'ADD/ADHD', 'הדרכת הורים', 'ויסות רגשי'],
+      organizations: ['מכון פסיכולוגי ירושלים', 'בתי ספר בעיר'],
+      location: 'ירושלים',
+      approach: 'גישה קוגניטיבית-התנהגותית עם דגש על העצמה וכלים מעשיים',
+      languages: ['עברית', 'אנגלית'],
+      price: '400 ₪ לפגישה'
     },
     'לירון מזרחי': {
-      title: 'מרפאה בעיסוק',
+      title: 'מרפא בעיסוק',
       experience: '8 שנות ניסיון',
-      education: 'תואר ראשון בריפוי בעיסוק + הסמכה בויסות חושי',
-      specializations: ['ויסות חושי', 'מוטוריקה עדינה', 'ADL', 'ASD'],
-      organizations: ['עמותת נצח', 'גנים בתל אביב', 'מרכז התפתחות הילד'],
-      location: 'תל אביב מרכז',
-      clinic: 'ציוד מקצועי מלא, משחקייה חושית, קומת קרקע',
-      approach: 'טיפול חושי מבוסס מחקר. שילוב הורים בתהליך הטיפולי.',
-      languages: 'עברית, אנגלית',
-      pricing: '₪320-400 לפגישה'
+      education: 'תואר ראשון בריפוי בעיסוק, המכללה האקדמית תל אביב-יפו',
+      specializations: ['שילוב חושי', 'מיומנויות חברתיות', 'גרפו-מוטוריקה'],
+      organizations: ['גני חינוך מיוחד', 'מרפאה פרטית'],
+      location: 'תל אביב',
+      approach: 'גישה מבוססת שילוב חושי ומשחק מכוון מטרה',
+      languages: ['עברית', 'אנגלית'],
+      price: '350 ₪ לפגישה'
     }
   };
   
-  const data = details[therapistName] || details['נועה כהן'];
+  const therapist = details[therapistName] || details['נועה כהן'];
   
   return `
     <div class="therapist-details-full">
       <div class="details-section">
-        <h4>👤 ${therapistName}</h4>
-        <p class="therapist-title">${data.title}</p>
-        <p><strong>ניסיון:</strong> ${data.experience}</p>
+        <h4>${therapistName}</h4>
+        <p>${therapist.title}</p>
+        <p><strong>ניסיון:</strong> ${therapist.experience}</p>
       </div>
       
       <div class="details-section">
-        <h4>🎓 השכלה והסמכות</h4>
-        <p>${data.education}</p>
+        <h5>השכלה והסמכות</h5>
+        <p>${therapist.education}</p>
       </div>
       
       <div class="details-section">
-        <h4>🎯 התמחויות</h4>
+        <h5>התמחויות</h5>
         <div class="spec-tags">
-          ${data.specializations.map(s => `<span class="spec-tag">${s}</span>`).join('')}
+          ${therapist.specializations.map(s => `<span class="spec-tag">${s}</span>`).join('')}
         </div>
       </div>
       
       <div class="details-section">
-        <h4>🏢 ארגונים ומסגרות</h4>
-        <ul>
-          ${data.organizations.map(o => `<li>${o}</li>`).join('')}
-        </ul>
+        <h5>ארגונים ומסגרות</h5>
+        <p>${therapist.organizations.join(' • ')}</p>
       </div>
       
       <div class="details-section">
-        <h4>📍 מיקום וקליניקה</h4>
-        <p><strong>איזור:</strong> ${data.location}</p>
-        <p><strong>הקליניקה:</strong> ${data.clinic}</p>
+        <h5>מיקום</h5>
+        <p>📍 ${therapist.location}</p>
       </div>
       
       <div class="details-section">
-        <h4>💡 גישה טיפולית</h4>
-        <p>${data.approach}</p>
+        <h5>גישה טיפולית</h5>
+        <p>${therapist.approach}</p>
       </div>
       
       <div class="details-section">
-        <h4>🗣️ שפות</h4>
-        <p>${data.languages}</p>
+        <h5>שפות</h5>
+        <p>${therapist.languages.join(' • ')}</p>
       </div>
       
       <div class="details-section">
-        <h4>💰 מחיר משוער</h4>
-        <p>${data.pricing}</p>
-        <p class="price-note">* ניתן להגיש לביטוח דרך מודול ההחזרים של FlowInsurance</p>
+        <h5>תמחור</h5>
+        <p><strong>${therapist.price}</strong></p>
+        <p class="price-note">*ניתן להגיש לביטוח משלים</p>
       </div>
     </div>
   `;
 }
 
 // ============================================
-// NAVIGATION ENHANCEMENTS - Reset to Step 1
+// Exports (for debugging)
+// ============================================
+
+window.FlowMatch = {
+  AppState,
+  saveStateToStorage,
+  loadStateFromStorage,
+  resetParentForm,
+  showToast,
+  navigateToStep
+};
+// ===============================
+// SIMPLE VIEW NAVIGATION (SAFE)
+// ===============================
+
+function showView(viewId) {
+  // hide all views
+  document.querySelectorAll('[data-view-content]').forEach(el => {
+    el.style.display = 'none';
+  });
+
+  // show requested view
+  const view = document.querySelector(`[data-view-content="${viewId}"]`);
+  if (view) {
+    view.style.display = 'block';
+  }
+
+  // optional state tracking
+  if (window.AppState) {
+    AppState.currentView = viewId;
+  }
+}
+
+// global click handler for navigation
+document.addEventListener('click', (e) => {
+  const nav = e.target.closest('[data-view]');
+  if (!nav) return;
+
+  const viewId = nav.getAttribute('data-view');
+  if (!viewId) return;
+
+  e.preventDefault();
+  showView(viewId);
+});
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('JS loaded');
+
+  initializeApp();
+
+  // navigation click handler
+  document.addEventListener('click', (e) => {
+    const nav = e.target.closest('[data-view]');
+    if (!nav) return;
+
+    const viewId = nav.getAttribute('data-view');
+    if (!viewId) return;
+
+    e.preventDefault();
+    showView(viewId);
+  });
+});
+
+
+// ============================================
+// NAVIGATION ENHANCEMENTS - Auto Reset to Step 1
+// Added: 2024-12-14
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🔧 Applying navigation enhancements...');
+  console.log('🔧 FlowMatch Navigation Enhancements Loading...');
   
-  // Wait for app to initialize
   setTimeout(() => {
-    // Universal handler for ALL navigation clicks
+    // Universal click handler for ALL navigation
     document.addEventListener('click', function(e) {
-      const viewButton = e.target.closest('[data-view]');
-      if (!viewButton) return;
+      const btn = e.target.closest('[data-view]');
+      if (!btn) return;
       
-      const viewId = viewButton.getAttribute('data-view');
+      const viewId = btn.getAttribute('data-view');
       
-      // If navigating to parent-flow or therapist-flow, reset to step 1
+      // Reset to step 1 when navigating to flows
       if (viewId === 'parent-flow' || viewId === 'therapist-flow') {
         setTimeout(() => {
           const flowType = viewId.replace('-flow', '');
           const form = document.getElementById(`${flowType}-form`);
-          if (form) {
-            resetToStep(flowType, 1, form);
-            console.log(`🔄 Auto-reset ${flowType} to step 1`);
+          if (form && typeof resetFlowToStep === 'function') {
+            resetFlowToStep(flowType, 1, form);
+            console.log(`✅ Reset ${flowType} to step 1`);
           }
         }, 150);
       }
     }, true);
     
-    console.log('✅ Navigation enhancements applied');
-  }, 600);
+    console.log('✅ Navigation enhancements active');
+  }, 500);
 });
 
-function resetToStep(flowType, step, form) {
-  // Hide all panels
+// Reset flow to specific step
+function resetFlowToStep(flowType, step, form) {
+  if (!form) return;
+  
+  // Hide all step panels
   const panels = form.querySelectorAll('.step-panel');
-  panels.forEach(panel => panel.classList.remove('active'));
+  panels.forEach(p => p.classList.remove('active'));
   
   // Show target step
-  const targetPanel = form.querySelector(`[data-step="${step}"]`);
-  if (targetPanel) {
-    targetPanel.classList.add('active');
-  }
+  const target = form.querySelector(`[data-step="${step}"]`);
+  if (target) target.classList.add('active');
   
-  // Hide success/results
+  // Hide results/success
   if (flowType === 'parent') {
     const results = document.getElementById('parent-results');
     if (results) results.classList.remove('active');
-  } else if (flowType === 'therapist') {
+  } else {
     const success = document.getElementById('therapist-success');
     if (success) {
       success.classList.remove('visible');
@@ -1774,15 +1239,17 @@ function resetToStep(flowType, step, form) {
     }
   }
   
-  // Update progress
-  if (flowType === 'parent') {
-    updateParentProgress();
-  } else if (flowType === 'therapist') {
-    updateTherapistProgress();
+  // Update state
+  if (typeof AppState !== 'undefined') {
+    AppState[`${flowType}Data`].step = step;
   }
   
-  // Update state
-  AppState[`${flowType}Data`].step = step;
+  // Update progress
+  if (flowType === 'parent' && typeof updateParentProgress === 'function') {
+    updateParentProgress();
+  } else if (flowType === 'therapist' && typeof updateTherapistProgress === 'function') {
+    updateTherapistProgress();
+  }
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
