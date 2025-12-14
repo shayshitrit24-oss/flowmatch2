@@ -706,13 +706,31 @@ function initializeTherapistFlow() {
   setupTherapistSubSpecialties(form); // Add dynamic sub-specializations
   initializeScheduleManager(); // Add weekly schedule manager
   
+  // Handle form submission
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Therapist form submitted!');
-    // For MVP - skip validation and show success
+    console.log('✅ Therapist form submitted via submit event!');
     showTherapistSuccess();
   });
+  
+  // ALSO add direct listener on the final submit button as backup
+  setTimeout(() => {
+    const submitButtons = form.querySelectorAll('button[type="submit"]');
+    submitButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        // Check if we're on step 4 (final step)
+        const step4 = form.querySelector('.step-panel[data-step="4"]');
+        if (step4 && step4.classList.contains('active')) {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('✅ Therapist registration completed via button click!');
+          showTherapistSuccess();
+        }
+      });
+    });
+    console.log('✅ Therapist submit button listeners added');
+  }, 500);
   
   updateTherapistProgress();
 }
@@ -1798,6 +1816,32 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   console.log('✅ Navigation fixes applied');
+  
+  // Fix 2: Also reset when clicking ANY button that leads to parent/therapist flow
+  // This includes CTAs like "התחל תהליך התאמה", "קודם מצא מטפל", etc.
+  setTimeout(() => {
+    // Monitor ALL clicks on data-view buttons
+    document.addEventListener('click', function(e) {
+      const viewButton = e.target.closest('[data-view]');
+      if (!viewButton) return;
+      
+      const viewId = viewButton.getAttribute('data-view');
+      
+      // If navigating to parent-flow or therapist-flow, reset to step 1
+      if (viewId === 'parent-flow' || viewId === 'therapist-flow') {
+        setTimeout(() => {
+          const flowType = viewId.replace('-flow', '');
+          const form = document.getElementById(`${flowType}-form`);
+          if (form) {
+            resetToStep(flowType, 1, form);
+            console.log(`🔄 Auto-reset ${flowType} flow to step 1 from CTA button`);
+          }
+        }, 150);
+      }
+    }, true);
+    
+    console.log('✅ CTA button reset handlers added');
+  }, 600);
 });
 
 function resetToStep(flowType, step, form) {
