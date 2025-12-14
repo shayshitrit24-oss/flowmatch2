@@ -4479,3 +4479,90 @@ a:focus-visible {
     padding: 12px;
   }
 }
+
+/* =============================================
+   ENHANCED FLOW DIAGRAM STYLES
+   ============================================= */
+
+.flow-diagram-enhanced {
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  margin: 2rem auto;
+  display: block;
+}
+
+.flow-text-white {
+  fill: white;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-primary);
+}
+
+.flow-text-large {
+  fill: white;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--font-primary);
+}
+
+.flow-text-dark {
+  fill: #1f2937;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-primary);
+}
+
+.flow-text-small {
+  fill: #6b7280;
+  font-size: 11px;
+  font-family: var(--font-primary);
+}
+
+.flow-caption {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+.flow-diagram-container h3 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+/* Mobile Navigation - Ensure text is visible */
+@media (max-width: 768px) {
+  .nav-btn {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+  
+  .nav-btn span {
+    display: block;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+  
+  .nav-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Ensure demo cards work well on mobile */
+@media (max-width: 768px) {
+  .demo-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .phone-mock {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+
