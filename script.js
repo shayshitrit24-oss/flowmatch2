@@ -36,15 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeApp() {
-  // Show loading screen
-  const loadingScreen = document.getElementById('loadingScreen');
-  
-  setTimeout(() => {
-    if (loadingScreen) {
-      loadingScreen.classList.add('hidden');
-    }
-  }, 1500);
-
   // Load saved data
   loadStateFromStorage();
   
@@ -60,6 +51,15 @@ function initializeApp() {
   setupGlobalListeners();
   
   console.log('✅ FlowMatch initialized successfully');
+  
+  // Hide loading screen after everything is ready
+  setTimeout(() => {
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) {
+      loadingScreen.classList.add('hidden');
+      console.log('✅ Loading screen hidden');
+    }
+  }, 800);
 }
 
 // ============================================
