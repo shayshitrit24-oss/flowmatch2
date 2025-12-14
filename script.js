@@ -1723,3 +1723,76 @@ document.addEventListener('DOMContentLoaded', function() {
   }, 500);
 }, false);
 
+// ============================================
+// FIXES FOR NAVIGATION & SUCCESS MESSAGES
+// ============================================
+
+// Fix 1: Reset to step 1 when clicking parent/therapist nav buttons
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🔧 Applying navigation fixes...');
+  
+  // Parent flow - reset to step 1
+  const parentNavButtons = document.querySelectorAll('[data-view="parent-flow"]');
+  parentNavButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      setTimeout(() => {
+        const form = document.getElementById('parent-form');
+        if (form) {
+          resetToStep('parent', 1, form);
+        }
+      }, 100);
+    });
+  });
+  
+  // Therapist flow - reset to step 1
+  const therapistNavButtons = document.querySelectorAll('[data-view="therapist-flow"]');
+  therapistNavButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      setTimeout(() => {
+        const form = document.getElementById('therapist-form');
+        if (form) {
+          resetToStep('therapist', 1, form);
+        }
+      }, 100);
+    });
+  });
+  
+  console.log('✅ Navigation fixes applied');
+});
+
+function resetToStep(flowType, step, form) {
+  // Hide all panels
+  const panels = form.querySelectorAll('.step-panel');
+  panels.forEach(panel => {
+    panel.classList.remove('active');
+  });
+  
+  // Show step 1
+  const targetPanel = form.querySelector(`[data-step="${step}"]`);
+  if (targetPanel) {
+    targetPanel.classList.add('active');
+  }
+  
+  // Hide success/results
+  if (flowType === 'parent') {
+    const results = document.getElementById('parent-results');
+    if (results) results.classList.remove('active');
+  } else if (flowType === 'therapist') {
+    const success = document.getElementById('therapist-success');
+    if (success) {
+      success.classList.remove('visible');
+      success.style.display = 'none';
+    }
+  }
+  
+  // Update progress
+  if (flowType === 'parent') {
+    updateParentProgress();
+  } else if (flowType === 'therapist') {
+    updateTherapistProgress();
+  }
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  console.log(`✅ Reset ${flowType} to step ${step}`);
+}
+
