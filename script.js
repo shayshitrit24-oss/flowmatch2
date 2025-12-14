@@ -36,6 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeApp() {
+  // Show loading screen
+  const loadingScreen = document.getElementById('loadingScreen');
+  
+  setTimeout(() => {
+    if (loadingScreen) {
+      loadingScreen.classList.add('hidden');
+    }
+  }, 1500);
+
   // Load saved data
   loadStateFromStorage();
   
@@ -51,15 +60,6 @@ function initializeApp() {
   setupGlobalListeners();
   
   console.log('✅ FlowMatch initialized successfully');
-  
-  // Hide loading screen after everything is ready
-  setTimeout(() => {
-    const loadingScreen = document.getElementById('loadingScreen');
-    if (loadingScreen) {
-      loadingScreen.classList.add('hidden');
-      console.log('✅ Loading screen hidden');
-    }
-  }, 800);
 }
 
 // ============================================
@@ -310,50 +310,10 @@ function validateCurrentStep(flowType, step) {
   
   if (!panel) return true;
   
-  // For therapist flow - lenient validation for demo
-  if (flowType === 'therapist') {
-    // Step 1: Only require name and email
-    if (step === 1) {
-      const name = panel.querySelector('[name="therapist_name"]');
-      const email = panel.querySelector('[name="therapist_email"]');
-      
-      let isValid = true;
-      
-      if (name && !name.value.trim()) {
-        showFieldError(name, 'שדה חובה');
-        isValid = false;
-      } else if (name) {
-        hideFieldError(name);
-      }
-      
-      if (email && !email.value.trim()) {
-        showFieldError(email, 'שדה חובה');
-        isValid = false;
-      } else if (email) {
-        hideFieldError(email);
-      }
-      
-      if (!isValid) {
-        showToast('נא להזין שם ודוא"ל', 'error');
-      }
-      
-      return isValid;
-    }
-    
-    // Steps 2-4: Allow progression (demo mode)
-    return true;
-  }
-  
-  // For parent flow - standard validation
   const requiredFields = panel.querySelectorAll('[required]');
   let isValid = true;
   
   requiredFields.forEach(field => {
-    // Skip hidden or disabled fields
-    if (field.offsetParent === null || field.disabled) {
-      return;
-    }
-    
     if (!field.value.trim()) {
       isValid = false;
       showFieldError(field, 'שדה חובה');
@@ -706,7 +666,7 @@ function initializeTherapistFlow() {
   setupTherapistSubSpecialties(form); // Add dynamic sub-specializations
   initializeScheduleManager(); // Add weekly schedule manager
   
-  // Handle form submission
+  // Primary handler: form submit
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -714,22 +674,20 @@ function initializeTherapistFlow() {
     showTherapistSuccess();
   });
   
-  // ALSO add direct listener on the final submit button as backup
+  // Backup handler: direct button click
   setTimeout(() => {
     const submitButtons = form.querySelectorAll('button[type="submit"]');
     submitButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
-        // Check if we're on step 4 (final step)
         const step4 = form.querySelector('.step-panel[data-step="4"]');
         if (step4 && step4.classList.contains('active')) {
           e.preventDefault();
           e.stopPropagation();
-          console.log('✅ Therapist registration completed via button click!');
+          console.log('✅ Therapist registration completed via button!');
           showTherapistSuccess();
         }
       });
     });
-    console.log('✅ Therapist submit button listeners added');
   }, 500);
   
   updateTherapistProgress();
@@ -1761,66 +1719,15 @@ function generateFullDetails(therapistName) {
 }
 
 // ============================================
-// NAVIGATION FIX - Added for reliability
+// NAVIGATION ENHANCEMENTS - Reset to Step 1
 // ============================================
 
-// Make sure navigation is initialized
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🔧 Navigation safety check...');
+  console.log('🔧 Applying navigation enhancements...');
   
-  // Add backup navigation handler
-  setTimeout(function() {
-    const navButtons = document.querySelectorAll('[data-view]');
-    console.log('📊 Found navigation elements:', navButtons.length);
-    
-    if (navButtons.length > 0) {
-      console.log('✅ Navigation elements present');
-    } else {
-      console.warn('⚠️ No navigation elements found');
-    }
-  }, 500);
-}, false);
-
-// ============================================
-// FIXES FOR NAVIGATION & SUCCESS MESSAGES
-// ============================================
-
-// Fix 1: Reset to step 1 when clicking parent/therapist nav buttons
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('🔧 Applying navigation fixes...');
-  
-  // Parent flow - reset to step 1
-  const parentNavButtons = document.querySelectorAll('[data-view="parent-flow"]');
-  parentNavButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
-      setTimeout(() => {
-        const form = document.getElementById('parent-form');
-        if (form) {
-          resetToStep('parent', 1, form);
-        }
-      }, 100);
-    });
-  });
-  
-  // Therapist flow - reset to step 1
-  const therapistNavButtons = document.querySelectorAll('[data-view="therapist-flow"]');
-  therapistNavButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
-      setTimeout(() => {
-        const form = document.getElementById('therapist-form');
-        if (form) {
-          resetToStep('therapist', 1, form);
-        }
-      }, 100);
-    });
-  });
-  
-  console.log('✅ Navigation fixes applied');
-  
-  // Fix 2: Also reset when clicking ANY button that leads to parent/therapist flow
-  // This includes CTAs like "התחל תהליך התאמה", "קודם מצא מטפל", etc.
+  // Wait for app to initialize
   setTimeout(() => {
-    // Monitor ALL clicks on data-view buttons
+    // Universal handler for ALL navigation clicks
     document.addEventListener('click', function(e) {
       const viewButton = e.target.closest('[data-view]');
       if (!viewButton) return;
@@ -1834,24 +1741,22 @@ document.addEventListener('DOMContentLoaded', function() {
           const form = document.getElementById(`${flowType}-form`);
           if (form) {
             resetToStep(flowType, 1, form);
-            console.log(`🔄 Auto-reset ${flowType} flow to step 1 from CTA button`);
+            console.log(`🔄 Auto-reset ${flowType} to step 1`);
           }
         }, 150);
       }
     }, true);
     
-    console.log('✅ CTA button reset handlers added');
+    console.log('✅ Navigation enhancements applied');
   }, 600);
 });
 
 function resetToStep(flowType, step, form) {
   // Hide all panels
   const panels = form.querySelectorAll('.step-panel');
-  panels.forEach(panel => {
-    panel.classList.remove('active');
-  });
+  panels.forEach(panel => panel.classList.remove('active'));
   
-  // Show step 1
+  // Show target step
   const targetPanel = form.querySelector(`[data-step="${step}"]`);
   if (targetPanel) {
     targetPanel.classList.add('active');
@@ -1876,7 +1781,9 @@ function resetToStep(flowType, step, form) {
     updateTherapistProgress();
   }
   
+  // Update state
+  AppState[`${flowType}Data`].step = step;
+  
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  console.log(`✅ Reset ${flowType} to step ${step}`);
 }
 
