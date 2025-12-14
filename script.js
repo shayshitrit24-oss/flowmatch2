@@ -35,6 +35,9 @@ function initializeApp() {
   // Load saved data
   loadStateFromStorage();
   
+  // Initialize navigation FIRST
+  initializeNavigation();
+  
   // Initialize all components
   initializeParentFlow();
   initializeTherapistFlow();
@@ -78,18 +81,46 @@ function loadStateFromStorage() {
 // ============================================
 
 function initializeNavigation() {
+  console.log('🚀 Initializing navigation system...');
+  
   // Single document-level click listener for all navigation
   document.addEventListener('click', (e) => {
     // Find closest element with data-view attribute
     const target = e.target.closest('[data-view]');
     
-    // If we clicked inside a [data-view] element but not directly on it,
-    // forward the click to the parent
-    if (target && e.target !== target) {
-      target.click();
-      return;
+    if (target) {
+      const viewId = target.getAttribute('data-view');
+      
+      if (viewId) {
+        console.log(`🎯 Navigating to view: ${viewId}`);
+        
+        // Hide all views
+        const allViews = document.querySelectorAll('.view');
+        allViews.forEach(view => {
+          view.classList.remove('active');
+        });
+        
+        // Show target view
+        const targetView = document.getElementById(viewId);
+        if (targetView) {
+          targetView.classList.add('active');
+          
+          // Update state
+          AppState.currentView = viewId;
+          saveStateToStorage();
+          
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          
+          console.log(`✅ View switched to: ${viewId}`);
+        } else {
+          console.warn(`⚠️ View not found: ${viewId}`);
+        }
+      }
     }
   });
+  
+  console.log('✅ Navigation system initialized');
 }
 
 // ============================================
