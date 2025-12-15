@@ -29,56 +29,50 @@
   </div>
 
   <div class="app-shell">
-    <!-- Enhanced Sticky Header with Emoji Icons -->
-    <header class="top-bar sticky-header">
-      <div class="container">
-        <div class="header-inner">
-          <div class="brand">
-            <div class="brand-logo">
-              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="36" height="36" rx="10" fill="url(#logo-gradient)"/>
-                <path d="M12 18L16 22L24 14" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                <defs>
-                  <linearGradient id="logo-gradient" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#3d7bfd"/>
-                    <stop offset="1" stop-color="#22c1c3"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-            <div class="brand-text">
-              <div class="brand-name">FlowMatch</div>
-              <div class="brand-tagline">קודם התאמה, אחר כך ביטוח</div>
-            </div>
+    <!-- Modern Header - Emoji Navigation (Based on Screenshot) -->
+    <header class="top-bar modern-header">
+      <div class="header-container">
+        <div class="brand">
+          <div class="brand-logo">
+            <svg width="40" height="40" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="36" height="36" rx="10" fill="url(#logo-gradient)"/>
+              <path d="M12 18L16 22L24 14" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="logo-gradient" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#3d7bfd"/>
+                  <stop offset="1" stop-color="#22c1c3"/>
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
-          
-          <nav class="top-nav">
-            <button class="nav-btn nav-btn-pill" data-view="landing">
-              <span class="nav-emoji">🏠</span>
-              <span class="nav-label">דף הבית</span>
-            </button>
-            <button class="nav-btn nav-btn-pill" data-view="parent-flow">
-              <span class="nav-emoji">👨‍👩‍👧</span>
-              <span class="nav-label">להורים</span>
-            </button>
-            <button class="nav-btn nav-btn-pill" data-view="therapist-flow">
-              <span class="nav-emoji">🧑‍⚕️</span>
-              <span class="nav-label">למטפלים</span>
-            </button>
-            <button class="nav-btn nav-btn-pill" data-view="insurance">
-              <span class="nav-emoji">💰</span>
-              <span class="nav-label">ביטוח</span>
-            </button>
-            <button class="nav-btn nav-btn-pill" data-view="demo-center">
-              <span class="nav-emoji">🎭</span>
-              <span class="nav-label">דמו</span>
-            </button>
-            <button class="nav-btn nav-btn-pill nav-btn-contact" data-view="contact">
-              <span class="nav-emoji">✉️</span>
-              <span class="nav-label">צור קשר</span>
-            </button>
-          </nav>
+          <div class="brand-text">
+            <div class="brand-name">FlowMatch</div>
+            <div class="brand-tagline">קודם התאמה, אחר כך ביטוח</div>
+          </div>
         </div>
+        
+        <nav class="modern-nav">
+          <button class="modern-nav-btn" data-view="demo-center">
+            <span class="nav-icon-emoji">🎭</span>
+            <span class="nav-text">דמו</span>
+          </button>
+          <button class="modern-nav-btn" data-view="insurance">
+            <span class="nav-icon-emoji">💰</span>
+            <span class="nav-text">ביטוח</span>
+          </button>
+          <button class="modern-nav-btn" data-view="therapist-flow">
+            <span class="nav-icon-emoji">👨‍⚕️</span>
+            <span class="nav-text">למטפלים</span>
+          </button>
+          <button class="modern-nav-btn" data-view="parent-flow">
+            <span class="nav-icon-emoji">👨‍👩‍👧</span>
+            <span class="nav-text">להורים</span>
+          </button>
+          <button class="modern-nav-btn" data-view="landing">
+            <span class="nav-icon-emoji">🏠</span>
+            <span class="nav-text">דף הבית</span>
+          </button>
+        </nav>
       </div>
     </header>
 
@@ -1841,191 +1835,130 @@
         </div>
 
         <!-- New Demo Screens Section -->
-
-        <!-- Enhanced Demo Section -->
         <div class="demo-daily-section">
           <div class="demo-daily-header">
             <h2>דמו – המחשה ויזואלית של יכולות המערכת</h2>
             <p class="demo-daily-subtitle">המסכים והתרשימים הבאים נועדו להמחיש כיצד FlowMatch תפעל בעתיד</p>
           </div>
 
-          <!-- Mobile Demo Screens Grid -->
-          <div class="demo-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin: 3rem 0;">
+          <!-- Flow Diagram -->
+          <div class="flow-diagram-container">
+            <svg class="flow-diagram" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+              <!-- Parent Flow (Top) -->
+              <g class="parent-flow">
+                <!-- Registration -->
+                <rect x="50" y="80" width="120" height="60" rx="8" class="flow-box"/>
+                <text x="110" y="115" class="flow-text">רישום</text>
+                
+                <!-- Arrow -->
+                <path d="M 170 110 L 210 110" class="flow-arrow"/>
+                <polygon points="210,110 205,107 205,113" class="flow-arrow-head"/>
+                
+                <!-- Define Need -->
+                <rect x="210" y="80" width="120" height="60" rx="8" class="flow-box"/>
+                <text x="270" y="110" class="flow-text">הגדרת</text>
+                <text x="270" y="125" class="flow-text">הצורך</text>
+                
+                <!-- Arrow -->
+                <path d="M 330 110 L 370 110" class="flow-arrow"/>
+                <polygon points="370,110 365,107 365,113" class="flow-arrow-head"/>
+                
+                <!-- Request Match -->
+                <rect x="370" y="80" width="120" height="60" rx="8" class="flow-box"/>
+                <text x="430" y="110" class="flow-text">בקשת</text>
+                <text x="430" y="125" class="flow-text">התאמה</text>
+                
+                <!-- Arrow to MATCH -->
+                <path d="M 430 140 Q 430 200 500 200" class="flow-arrow"/>
+                <polygon points="500,200 495,197 495,203" class="flow-arrow-head"/>
+              </g>
+
+              <!-- Therapist Flow (Bottom) -->
+              <g class="therapist-flow">
+                <!-- Registration -->
+                <rect x="50" y="300" width="120" height="60" rx="8" class="flow-box therapist-box"/>
+                <text x="110" y="335" class="flow-text">רישום</text>
+                
+                <!-- Arrow -->
+                <path d="M 170 330 L 210 330" class="flow-arrow"/>
+                <polygon points="210,330 205,327 205,333" class="flow-arrow-head"/>
+                
+                <!-- Define Expertise -->
+                <rect x="210" y="300" width="160" height="60" rx="8" class="flow-box therapist-box"/>
+                <text x="290" y="320" class="flow-text">הגדרת התמחות</text>
+                <text x="290" y="340" class="flow-text">וזמינות</text>
+                
+                <!-- Arrow to MATCH -->
+                <path d="M 290 300 Q 290 200 500 200" class="flow-arrow"/>
+                <polygon points="500,200 495,197 495,203" class="flow-arrow-head"/>
+              </g>
+
+              <!-- Central MATCH Node -->
+              <g class="match-node">
+                <circle cx="550" cy="200" r="70" class="match-circle"/>
+                <text x="550" y="190" class="match-text-main">MATCH</text>
+                <text x="550" y="210" class="match-text-sub">התאמה חכמה</text>
+                <text x="550" y="225" class="match-text-sub">ומותאמת אישית</text>
+              </g>
+
+              <!-- Treatment Event -->
+              <g class="treatment-flow">
+                <!-- Arrow from MATCH -->
+                <path d="M 620 200 L 680 200" class="flow-arrow"/>
+                <polygon points="680,200 675,197 675,203" class="flow-arrow-head"/>
+                
+                <!-- Treatment -->
+                <rect x="680" y="170" width="130" height="60" rx="8" class="flow-box treatment-box"/>
+                <text x="745" y="205" class="flow-text-bold">אירוע טיפולי</text>
+              </g>
+
+              <!-- Post-Treatment Split -->
+              <g class="post-treatment">
+                <!-- Therapist ends -->
+                <path d="M 745 230 L 745 330" class="flow-arrow-dashed"/>
+                <text x="760" y="280" class="flow-note">מטפל: סיום</text>
+                
+                <!-- Parent continues to insurance -->
+                <path d="M 745 170 L 745 110" class="flow-arrow"/>
+                <polygon points="745,110 742,115 748,115" class="flow-arrow-head"/>
+                
+                <!-- Optional Insurance Branch -->
+                <rect x="685" y="20" width="120" height="80" rx="8" class="flow-box optional-box"/>
+                <text x="745" y="45" class="flow-text-small">*אופציונלי*</text>
+                <text x="745" y="65" class="flow-text">שכבת</text>
+                <text x="745" y="80" class="flow-text">ביטוח</text>
+              </g>
+
+              <!-- Insurance Paths -->
+              <g class="insurance-paths">
+                <!-- Has Insurance -->
+                <path d="M 805 60 L 870 60" class="flow-arrow-thin"/>
+                <polygon points="870,60 865,57 865,63" class="flow-arrow-head-thin"/>
+                
+                <rect x="870" y="30" width="110" height="60" rx="6" class="flow-box-small"/>
+                <text x="925" y="50" class="flow-text-xs">הסבר זכויות</text>
+                <text x="925" y="65" class="flow-text-xs">ליווי החזרים</text>
+                
+                <!-- No Insurance -->
+                <path d="M 685 60 L 620 60" class="flow-arrow-thin"/>
+                <polygon points="620,60 625,57 625,63" class="flow-arrow-head-thin"/>
+                
+                <rect x="490" y="30" width="130" height="60" rx="6" class="flow-box-small"/>
+                <text x="555" y="50" class="flow-text-xs">המלצה מותאמת</text>
+                <text x="555" y="65" class="flow-text-xs">לביטוח (עתידי)</text>
+              </g>
+            </svg>
             
-            <!-- Screen 1: Therapist Profile (Mobile) -->
-            <article class="demo-card">
-              <div class="phone-mock">
-                <div class="phone-header">
-                  <span class="phone-time">14:23</span>
-                  <div class="phone-icons">
-                    <span>📶</span>
-                    <span>📡</span>
-                    <span>🔋</span>
-                  </div>
-                </div>
-                
-                <div class="phone-content">
-                  <div style="text-align: center; padding: 1.5rem;">
-                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #3d7bfd, #22c1c3); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: 700;">ר</div>
-                    <h3 style="margin: 0.5rem 0;">ד״ר רון לוי</h3>
-                    <p style="color: #6b7280; margin: 0.25rem 0;">פסיכולוג התפתחותי</p>
-                    <div style="display: flex; gap: 0.5rem; justify-content: center; margin: 1rem 0;">
-                      <span style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem;">חרדה</span>
-                      <span style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem;">ויסות רגשי</span>
-                    </div>
-                    <div style="display: flex; gap: 1rem; justify-content: center; margin: 1rem 0; font-size: 0.875rem; color: #6b7280;">
-                      <span>⭐ 4.9</span>
-                      <span>📍 נס ציונה</span>
-                      <span>💰 380 ₪</span>
-                    </div>
-                    <button style="width: 100%; background: linear-gradient(135deg, #3d7bfd, #22c1c3); color: white; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 600; margin-top: 1rem;">קביעת תור</button>
-                  </div>
-                </div>
-              </div>
-              <p class="demo-desc">פרופיל מטפל מלא - מוצג להורה לאחר התאמה</p>
-            </article>
+            <p class="diagram-caption">תרשים המחשה בלבד (דמו)</p>
+          </div>
 
-            <!-- Screen 2: Family Dashboard (Mobile) -->
-            <article class="demo-card">
-              <div class="phone-mock">
-                <div class="phone-header">
-                  <span class="phone-time">14:23</span>
-                  <div class="phone-icons">
-                    <span>📶</span>
-                    <span>📡</span>
-                    <span>🔋</span>
-                  </div>
-                </div>
-                
-                <div class="phone-content">
-                  <div style="padding: 1rem;">
-                    <h3 style="margin: 0 0 1rem 0;">המשפחה שלי</h3>
-                    
-                    <div style="background: white; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                      <div style="display: flex; gap: 1rem; align-items: center;">
-                        <div style="width: 50px; height: 50px; border-radius: 50%; background: #3d7bfd; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">👦</div>
-                        <div style="flex: 1;">
-                          <div style="font-weight: 600;">יואב • ריפוי בעיסוק</div>
-                          <div style="font-size: 0.75rem; color: #6b7280;">פגישה הבאה: 12/01</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div style="background: white; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                      <div style="display: flex; gap: 1rem; align-items: center;">
-                        <div style="width: 50px; height: 50px; border-radius: 50%; background: #22c1c3; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700;">👧</div>
-                        <div style="flex: 1;">
-                          <div style="font-weight: 600;">מאיה • קלינאות</div>
-                          <div style="font-size: 0.75rem; color: #6b7280;">פגישה הבאה: 15/01</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div style="background: #fef3c7; border-radius: 8px; padding: 0.75rem; text-align: center; font-size: 0.875rem; color: #92400e;">
-                      💰 ניצלתם 40% מתקרת ההחזרים השנה
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p class="demo-desc">דשבורד משפחתי - ניהול כל הטיפולים במקום אחד</p>
-            </article>
-
-            <!-- Screen 3: Insurance Claim (Mobile) -->
-            <article class="demo-card">
-              <div class="phone-mock">
-                <div class="phone-header">
-                  <span class="phone-time">14:23</span>
-                  <div class="phone-icons">
-                    <span>📶</span>
-                    <span>📡</span>
-                    <span>🔋</span>
-                  </div>
-                </div>
-                
-                <div class="phone-content">
-                  <div style="padding: 1rem;">
-                    <h3 style="margin: 0 0 1rem 0;">בקשת החזר</h3>
-                    
-                    <div style="background: white; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                      <div style="margin-bottom: 0.75rem;">
-                        <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">טיפול</div>
-                        <div style="font-weight: 600;">ריפוי בעיסוק</div>
-                      </div>
-                      <div style="margin-bottom: 0.75rem;">
-                        <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">תאריך</div>
-                        <div style="font-weight: 600;">05/01/2025</div>
-                      </div>
-                      <div style="margin-bottom: 0.75rem;">
-                        <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.25rem;">סכום</div>
-                        <div style="font-weight: 600; font-size: 1.25rem; color: #3d7bfd;">320 ₪</div>
-                      </div>
-                    </div>
-                    
-                    <div style="background: white; border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
-                      <div style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;">מסמכים מצורפים:</div>
-                      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">✓ קבלה</span>
-                        <span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">✓ סיכום</span>
-                        <span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">✓ אבחון</span>
-                      </div>
-                    </div>
-                    
-                    <div style="background: #fef3c7; border-radius: 8px; padding: 0.75rem; text-align: center; font-size: 0.875rem;">
-                      ⏳ הבקשה הוגשה • זמן טיפול: 7 ימים
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p class="demo-desc">טופס החזר ביטוחי - הגשה פשוטה ומהירה</p>
-            </article>
-
-            <!-- Screen 4: Therapist Dashboard (Mobile) -->
-            <article class="demo-card">
-              <div class="phone-mock">
-                <div class="phone-header">
-                  <span class="phone-time">14:23</span>
-                  <div class="phone-icons">
-                    <span>📶</span>
-                    <span>📡</span>
-                    <span>🔋</span>
-                  </div>
-                </div>
-                
-                <div class="phone-content">
-                  <div style="padding: 1rem;">
-                    <h3 style="margin: 0 0 1rem 0;">הדשבורד שלי</h3>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
-                      <div style="background: linear-gradient(135deg, #3d7bfd, #5b8fff); color: white; border-radius: 12px; padding: 1rem; text-align: center;">
-                        <div style="font-size: 2rem; font-weight: 700;">12</div>
-                        <div style="font-size: 0.875rem; opacity: 0.9;">פניות חדשות</div>
-                      </div>
-                      <div style="background: linear-gradient(135deg, #22c1c3, #40dfe0); color: white; border-radius: 12px; padding: 1rem; text-align: center;">
-                        <div style="font-size: 2rem; font-weight: 700;">8</div>
-                        <div style="font-size: 0.875rem; opacity: 0.9;">מטופלים פעילים</div>
-                      </div>
-                    </div>
-                    
-                    <div style="background: white; border-radius: 12px; padding: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                      <div style="font-weight: 600; margin-bottom: 0.75rem;">📅 השבוע הקרוב</div>
-                      <div style="padding: 0.5rem 0; border-bottom: 1px solid #e5e7eb;">
-                        <div style="font-size: 0.875rem;">א', 10:00 - יואב ל.</div>
-                      </div>
-                      <div style="padding: 0.5rem 0; border-bottom: 1px solid #e5e7eb;">
-                        <div style="font-size: 0.875rem;">ג', 14:00 - מאיה כ.</div>
-                      </div>
-                      <div style="padding: 0.5rem 0;">
-                        <div style="font-size: 0.875rem;">ה', 16:00 - הדרכת הורים</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p class="demo-desc">דשבורד מטפל - ניהול פניות, מטופלים ולוח שנה</p>
-            </article>
-
-            <!-- Screen 5: Parent Notifications (Mobile) - EXISTING -->
-            <article class="demo-card">
+          <div class="demo-phones-container">
+            <!-- Parent Phone Mock -->
+            <div class="demo-phone-card">
+              <h3 class="phone-title">
+                <span class="demo-badge">דמו</span>
+                מסך הורה
+              </h3>
               <div class="phone-mock">
                 <div class="phone-header">
                   <span class="phone-time">14:23</span>
@@ -2068,17 +2001,29 @@
                   <div class="notification-card notification-success">
                     <div class="notif-icon">✅</div>
                     <div class="notif-content">
-                      <div class="notif-title">החזר אושר!</div>
-                      <div class="notif-detail">280 ₪ יועברו תוך 5 ימים</div>
+                      <div class="notif-title">בקשת החזר הוגשה</div>
+                      <div class="notif-detail">המסמכים הועברו לבדיקה</div>
+                    </div>
+                  </div>
+
+                  <!-- Insurance Time Reminder -->
+                  <div class="notification-card notification-info">
+                    <div class="notif-icon">⏰</div>
+                    <div class="notif-content">
+                      <div class="notif-title">עברו 21 ימי עסקים מהגשת ההחזר</div>
+                      <div class="notif-detail">מומלץ לבדוק סטטוס מול חברת הביטוח</div>
                     </div>
                   </div>
                 </div>
               </div>
-              <p class="demo-desc">התראות הורה - עדכונים בזמן אמת</p>
-            </article>
+            </div>
 
-            <!-- Screen 6: Therapist Matches (Mobile) - EXISTING -->
-            <article class="demo-card">
+            <!-- Therapist Phone Mock -->
+            <div class="demo-phone-card">
+              <h3 class="phone-title">
+                <span class="demo-badge">דמו</span>
+                מסך מטפל
+              </h3>
               <div class="phone-mock">
                 <div class="phone-header">
                   <span class="phone-time">14:23</span>
@@ -2090,239 +2035,58 @@
                 </div>
                 
                 <div class="phone-content">
-                  <div class="match-card">
-                    <div class="match-header">
-                      <span class="match-badge match-hot">🔥 התאמה חמה</span>
-                      <span class="match-score">92%</span>
-                    </div>
-                    <div class="match-child">
-                      <strong>יואב, 6</strong> • ריפוי בעיסוק
-                    </div>
-                    <div class="match-need">
-                      קשיים בריכוז, כתיבה, מוטוריקה עדינה
-                    </div>
-                    <div class="match-actions">
-                      <button class="match-btn match-accept">קבל פנייה</button>
-                      <button class="match-btn match-details">פרטים</button>
+                  <!-- Upcoming Session -->
+                  <div class="notification-card notification-primary">
+                    <div class="notif-icon">🕐</div>
+                    <div class="notif-content">
+                      <div class="notif-title">טיפול קרוב היום</div>
+                      <div class="notif-time">18:00 | הורה: דנה</div>
                     </div>
                   </div>
 
-                  <div class="match-card">
-                    <div class="match-header">
-                      <span class="match-badge match-good">✓ התאמה טובה</span>
-                      <span class="match-score">84%</span>
-                    </div>
-                    <div class="match-child">
-                      <strong>מאיה, 4.5</strong> • קלינאות תקשורת
-                    </div>
-                    <div class="match-need">
-                      עיכוב שפה, קושי בהיגוי
-                    </div>
-                    <div class="match-actions">
-                      <button class="match-btn match-accept">קבל פנייה</button>
-                      <button class="match-btn match-details">פרטים</button>
+                  <!-- New Feedback -->
+                  <div class="notification-card notification-success">
+                    <div class="notif-icon">⭐</div>
+                    <div class="notif-content">
+                      <div class="notif-title">התקבל משוב חדש מהורה</div>
+                      <div class="notif-detail">דירוג: 4.8 ⭐</div>
                     </div>
                   </div>
 
-                  <div class="match-card">
-                    <div class="match-header">
-                      <span class="match-badge">התאמה סבירה</span>
-                      <span class="match-score">71%</span>
+                  <!-- Pending Payment -->
+                  <div class="notification-card notification-warning">
+                    <div class="notif-icon">💰</div>
+                    <div class="notif-content">
+                      <div class="notif-title">תשלום טרם התקבל</div>
+                      <div class="notif-detail">מטופל: יואב</div>
                     </div>
-                    <div class="match-child">
-                      <strong>נועם, 8</strong> • פיזיותרפיה
-                    </div>
-                    <div class="match-need">
-                      שיקום לאחר פציעה בספורט
-                    </div>
-                    <div class="match-actions">
-                      <button class="match-btn match-accept">קבל פנייה</button>
-                      <button class="match-btn match-details">פרטים</button>
+                  </div>
+
+                  <!-- New Inquiry -->
+                  <div class="notification-card notification-info">
+                    <div class="notif-icon">📬</div>
+                    <div class="notif-content">
+                      <div class="notif-title">פנייה חדשה ממתינה לאישור</div>
                     </div>
                   </div>
                 </div>
               </div>
-              <p class="demo-desc">פניות למטפל - התאמות מדויקות עם ניקוד</p>
-            </article>
-
+            </div>
           </div>
 
-          <!-- Enhanced Flow Diagram -->
-          <div class="flow-diagram-container" style="margin: 4rem 0;">
-            <h3 style="text-align: center; font-size: 1.75rem; margin-bottom: 3rem; color: var(--text-primary);">
-              💡 זרימת המערכת - מהרישום ועד לטיפול
-            </h3>
-            
-            <svg class="flow-diagram-enhanced" viewBox="0 0 1200 750" xmlns="http://www.w3.org/2000/svg">
-              
-              <!-- Definitions -->
-              <defs>
-                <!-- Gradients -->
-                <linearGradient id="parentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#3d7bfd"/>
-                  <stop offset="100%" stop-color="#5b8fff"/>
-                </linearGradient>
-                
-                <linearGradient id="therapistGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#22c1c3"/>
-                  <stop offset="100%" stop-color="#40dfe0"/>
-                </linearGradient>
-                
-                <linearGradient id="matchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#10b981"/>
-                  <stop offset="100%" stop-color="#34d399"/>
-                </linearGradient>
-                
-                <linearGradient id="insuranceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#f59e0b"/>
-                  <stop offset="100%" stop-color="#fbbf24"/>
-                </linearGradient>
-                
-                <!-- Drop shadow -->
-                <filter id="dropShadow">
-                  <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
-                </filter>
-                
-                <!-- Arrow markers -->
-                <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-                  <path d="M0,0 L0,6 L9,3 z" fill="#3d7bfd"/>
-                </marker>
-                <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-                  <path d="M0,0 L0,6 L9,3 z" fill="#22c1c3"/>
-                </marker>
-                <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-                  <path d="M0,0 L0,6 L9,3 z" fill="#10b981"/>
-                </marker>
-              </defs>
-              
-              <!-- Parent Flow (Top) -->
-              <g class="flow-layer">
-                <!-- Step 1: Parent Registration -->
-                <rect x="50" y="80" width="150" height="90" rx="12" fill="url(#parentGradient)" filter="url(#dropShadow)"/>
-                <text x="125" y="115" text-anchor="middle" class="flow-text-white" font-size="28">👨‍👩‍👧</text>
-                <text x="125" y="145" text-anchor="middle" class="flow-text-white">הורה: רישום</text>
-                
-                <!-- Arrow 1 -->
-                <path d="M 200 125 L 250 125" stroke="#3d7bfd" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
-                
-                <!-- Step 2: Define Need -->
-                <rect x="250" y="80" width="150" height="90" rx="12" fill="url(#parentGradient)" filter="url(#dropShadow)"/>
-                <text x="325" y="115" text-anchor="middle" class="flow-text-white" font-size="28">📝</text>
-                <text x="325" y="145" text-anchor="middle" class="flow-text-white">הגדרת הצורך</text>
-                
-                <!-- Arrow 2 -->
-                <path d="M 400 125 L 450 125" stroke="#3d7bfd" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
-                
-                <!-- Step 3: Request Match -->
-                <rect x="450" y="80" width="150" height="90" rx="12" fill="url(#parentGradient)" filter="url(#dropShadow)"/>
-                <text x="525" y="115" text-anchor="middle" class="flow-text-white" font-size="28">🔍</text>
-                <text x="525" y="145" text-anchor="middle" class="flow-text-white">בקשת התאמה</text>
-                
-                <!-- Arrow down to match -->
-                <path d="M 525 170 L 525 280" stroke="#3d7bfd" stroke-width="3" fill="none" marker-end="url(#arrowBlue)"/>
-              </g>
-              
-              <!-- Therapist Flow (Bottom) -->
-              <g class="flow-layer">
-                <!-- Step 1: Therapist Registration -->
-                <rect x="50" y="530" width="150" height="90" rx="12" fill="url(#therapistGradient)" filter="url(#dropShadow)"/>
-                <text x="125" y="565" text-anchor="middle" class="flow-text-white" font-size="28">🧑‍⚕️</text>
-                <text x="125" y="595" text-anchor="middle" class="flow-text-white">מטפל: רישום</text>
-                
-                <!-- Arrow 1 -->
-                <path d="M 200 575 L 250 575" stroke="#22c1c3" stroke-width="3" fill="none" marker-end="url(#arrowTeal)"/>
-                
-                <!-- Step 2: Define Expertise -->
-                <rect x="250" y="530" width="170" height="90" rx="12" fill="url(#therapistGradient)" filter="url(#dropShadow)"/>
-                <text x="335" y="565" text-anchor="middle" class="flow-text-white" font-size="28">🎓</text>
-                <text x="335" y="595" text-anchor="middle" class="flow-text-white">התמחות וזמינות</text>
-                
-                <!-- Arrow up to match -->
-                <path d="M 335 530 L 335 470" stroke="#22c1c3" stroke-width="3" fill="none" marker-end="url(#arrowTeal)"/>
-              </g>
-              
-              <!-- Central Match Node -->
-              <g class="match-node">
-                <circle cx="525" cy="375" r="95" fill="url(#matchGradient)" filter="url(#dropShadow)"/>
-                <text x="525" y="360" text-anchor="middle" class="flow-text-large" font-size="32">✨</text>
-                <text x="525" y="390" text-anchor="middle" class="flow-text-large">התאמה</text>
-                <text x="525" y="410" text-anchor="middle" class="flow-text-white">MATCH</text>
-                
-                <!-- Pulse animation circles -->
-                <circle cx="525" cy="375" r="100" fill="none" stroke="#10b981" stroke-width="2" opacity="0">
-                  <animate attributeName="r" from="100" to="120" dur="2s" repeatCount="indefinite"/>
-                  <animate attributeName="opacity" from="0.8" to="0" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="525" cy="375" r="100" fill="none" stroke="#10b981" stroke-width="2" opacity="0">
-                  <animate attributeName="r" from="100" to="120" dur="2s" begin="1s" repeatCount="indefinite"/>
-                  <animate attributeName="opacity" from="0.8" to="0" dur="2s" begin="1s" repeatCount="indefinite"/>
-                </circle>
-              </g>
-              
-              <!-- Treatment Event -->
-              <g class="flow-layer">
-                <rect x="720" y="325" width="180" height="100" rx="12" fill="#60a5fa" filter="url(#dropShadow)"/>
-                <text x="810" y="365" text-anchor="middle" class="flow-text-white" font-size="32">💊</text>
-                <text x="810" y="400" text-anchor="middle" class="flow-text-white">אירוע טיפולי</text>
-                
-                <!-- Arrow from match to treatment -->
-                <path d="M 620 375 L 720 375" stroke="#10b981" stroke-width="4" fill="none" marker-end="url(#arrowGreen)"/>
-              </g>
-              
-              <!-- Split Paths -->
-              <g class="flow-layer">
-                <!-- Therapist: Complete -->
-                <rect x="950" y="470" width="160" height="80" rx="12" fill="url(#therapistGradient)" filter="url(#dropShadow)"/>
-                <text x="1030" y="505" text-anchor="middle" class="flow-text-white" font-size="24">✓</text>
-                <text x="1030" y="530" text-anchor="middle" class="flow-text-white">מטפל: סיום</text>
-                
-                <!-- Parent: Insurance Option -->
-                <rect x="950" y="240" width="160" height="80" rx="12" fill="url(#parentGradient)" filter="url(#dropShadow)"/>
-                <text x="1030" y="275" text-anchor="middle" class="flow-text-white" font-size="24">💰</text>
-                <text x="1030" y="300" text-anchor="middle" class="flow-text-white">הורה: ביטוח</text>
-                
-                <!-- Arrows -->
-                <path d="M 900 400 L 950 510" stroke="#22c1c3" stroke-width="3" fill="none" stroke-dasharray="8,4" marker-end="url(#arrowTeal)"/>
-                <path d="M 900 350 L 950 280" stroke="#3d7bfd" stroke-width="3" fill="none" stroke-dasharray="8,4" marker-end="url(#arrowBlue)"/>
-              </g>
-              
-              <!-- Insurance Layer (Optional) -->
-              <g class="flow-layer">
-                <rect x="1030" y="80" width="140" height="140" rx="12" fill="url(#insuranceGradient)" opacity="0.95" filter="url(#dropShadow)" stroke="#d97706" stroke-width="2" stroke-dasharray="6,3"/>
-                <text x="1100" y="125" text-anchor="middle" class="flow-text-dark" font-size="32">💳</text>
-                <text x="1100" y="160" text-anchor="middle" class="flow-text-dark">שכבת ביטוח</text>
-                <text x="1100" y="185" text-anchor="middle" class="flow-text-small">(אופציונלי)</text>
-                <text x="1100" y="205" text-anchor="middle" class="flow-text-small">FlowInsurance</text>
-                
-                <!-- Arrow -->
-                <path d="M 1030 200 L 1030 240" stroke="#3d7bfd" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
-              </g>
-              
-              <!-- Legend -->
-              <g class="flow-legend" transform="translate(50, 700)">
-                <text x="0" y="0" class="flow-text-small" font-weight="600">מקרא:</text>
-                
-                <rect x="0" y="10" width="18" height="18" fill="#3d7bfd" rx="3"/>
-                <text x="25" y="24" class="flow-text-small">זרימת הורה</text>
-                
-                <rect x="150" y="10" width="18" height="18" fill="#22c1c3" rx="3"/>
-                <text x="175" y="24" class="flow-text-small">זרימת מטפל</text>
-                
-                <rect x="300" y="10" width="18" height="18" fill="#10b981" rx="3"/>
-                <text x="325" y="24" class="flow-text-small">התאמה וטיפול</text>
-                
-                <rect x="460" y="10" width="18" height="18" fill="#f59e0b" rx="3" stroke="#d97706" stroke-width="1" stroke-dasharray="3,2"/>
-                <text x="485" y="24" class="flow-text-small">ביטוח (אופציונלי)</text>
-              </g>
-            </svg>
-            
-            <p class="flow-caption" style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 2rem; font-style: italic;">
-              תרשים המחשה: המסע המלא של משתמש במערכת FlowMatch - מרישום ועד לטיפול ואופציית ביטוח
-            </p>
+          <!-- Advanced Capabilities -->
+          <div class="demo-capabilities">
+            <h3>יכולות מתקדמות (בדמו)</h3>
+            <ul class="capabilities-list">
+              <li>✅ התאמה חכמה</li>
+              <li>✅ ניהול פניות וזמינות</li>
+              <li>✅ תשלומים והתראות</li>
+              <li>🔄 שכבה משלימה לסיוע בהחזרים ביטוחיים</li>
+              <li>🚧 Dashboards להורים ולמטפלים <span class="badge-dev">בפיתוח</span></li>
+            </ul>
           </div>
-
         </div>
-
+      </section>
 
       <!-- Contact Section -->
       <section id="contact" class="view">
@@ -2389,7 +2153,7 @@
                 </svg>
                 <div class="contact-method-content">
                   <span class="contact-label">אימייל</span>
-                  <a href="/cdn-cgi/l/email-protection#41222e2f3520223501272d2e362c203522296f222e6f282d" class="contact-value"><span class="__cf_email__" data-cfemail="65060a0b110406112503090a12080411060d4b060a4b0c09">[email&#160;protected]</span></a>
+                  <a href="mailto:contact@flowmatch.co.il" class="contact-value">contact@flowmatch.co.il</a>
                 </div>
               </div>
 
@@ -2457,25 +2221,13 @@
     <defs>
       <linearGradient id="score-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#3d7bfd"/>
-        <stop offset="100%" stop-color=\"#22c1c3\"/>
-      </linearGradient>
+        <stop offset="100%" stop-color="#22c1c3"/>
+        </linearGradient>
     </defs>
   </svg>
 
   <!-- Main Script -->
   <script src="script.js"></script>
-  
-  <!-- Loading Screen Fallback -->
-  <script>
-    // Fallback: Hide loading screen after 3 seconds even if main script fails
-    setTimeout(function() {
-      var loadingScreen = document.getElementById('loadingScreen');
-      if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
-        loadingScreen.classList.add('hidden');
-        console.warn('⚠️ Loading screen hidden by fallback timeout');
-      }
-    }, 3000);
-  </script>
 
 </body>
 </html>
