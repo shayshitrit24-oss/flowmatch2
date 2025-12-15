@@ -4479,3 +4479,58 @@ a:focus-visible {
     padding: 12px;
   }
 }
+
+/* =============================================
+   FIX 1: Button Color Consistency
+   Parent = Light Blue, Therapist = White
+   ============================================= */
+
+/* Hero CTA - Parent button (light blue) */
+.hero-cta .cta-primary {
+  background: linear-gradient(135deg, #e0f2fe, #dbeafe) !important;
+  border: 2px solid #3b82f6 !important;
+  color: #1e40af !important;
+}
+
+.hero-cta .cta-primary:hover {
+  background: linear-gradient(135deg, #bfdbfe, #93c5fd) !important;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25) !important;
+}
+
+/* Hero CTA - Therapist button (white) */
+.hero-cta .cta-secondary {
+  background: white !important;
+  border: 2px solid #10b981 !important;
+  color: #065f46 !important;
+}
+
+.hero-cta .cta-secondary:hover {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7) !important;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15) !important;
+}
+
+
+/* =============================================
+   FIX 2: Therapist Success Message Display
+   ============================================= */
+
+#therapist-success {
+  display: none;
+}
+
+#therapist-success.visible {
+  display: block !important;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
