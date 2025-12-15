@@ -36,6 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeApp() {
+  // Show loading screen
+  const loadingScreen = document.getElementById('loadingScreen');
+  
+  setTimeout(() => {
+    if (loadingScreen) {
+      loadingScreen.classList.add('hidden');
+    }
+  }, 1500);
+
   // Load saved data
   loadStateFromStorage();
   
@@ -51,15 +60,6 @@ function initializeApp() {
   setupGlobalListeners();
   
   console.log('✅ FlowMatch initialized successfully');
-  
-  // Hide loading screen after everything is ready
-  setTimeout(() => {
-    const loadingScreen = document.getElementById('loadingScreen');
-    if (loadingScreen) {
-      loadingScreen.classList.add('hidden');
-      console.log('✅ Loading screen hidden');
-    }
-  }, 800);
 }
 
 // ============================================
@@ -310,50 +310,10 @@ function validateCurrentStep(flowType, step) {
   
   if (!panel) return true;
   
-  // For therapist flow - lenient validation for demo
-  if (flowType === 'therapist') {
-    // Step 1: Only require name and email
-    if (step === 1) {
-      const name = panel.querySelector('[name="therapist_name"]');
-      const email = panel.querySelector('[name="therapist_email"]');
-      
-      let isValid = true;
-      
-      if (name && !name.value.trim()) {
-        showFieldError(name, 'שדה חובה');
-        isValid = false;
-      } else if (name) {
-        hideFieldError(name);
-      }
-      
-      if (email && !email.value.trim()) {
-        showFieldError(email, 'שדה חובה');
-        isValid = false;
-      } else if (email) {
-        hideFieldError(email);
-      }
-      
-      if (!isValid) {
-        showToast('נא להזין שם ודוא"ל', 'error');
-      }
-      
-      return isValid;
-    }
-    
-    // Steps 2-4: Allow progression (demo mode)
-    return true;
-  }
-  
-  // For parent flow - standard validation
   const requiredFields = panel.querySelectorAll('[required]');
   let isValid = true;
   
   requiredFields.forEach(field => {
-    // Skip hidden or disabled fields
-    if (field.offsetParent === null || field.disabled) {
-      return;
-    }
-    
     if (!field.value.trim()) {
       isValid = false;
       showFieldError(field, 'שדה חובה');
@@ -1762,179 +1722,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }, 500);
 }, false);
-
-// ============================================
-// FIXES FOR NAVIGATION & SUCCESS MESSAGES
-// ============================================
-
-// Fix 1: Reset to step 1 when clicking parent/therapist nav buttons
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('🔧 Applying navigation fixes...');
-  
-  // Parent flow - reset to step 1
-  const parentNavButtons = document.querySelectorAll('[data-view="parent-flow"]');
-  parentNavButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
-      setTimeout(() => {
-        const form = document.getElementById('parent-form');
-        if (form) {
-          resetToStep('parent', 1, form);
-        }
-      }, 100);
-    });
-  });
-  
-  // Therapist flow - reset to step 1
-  const therapistNavButtons = document.querySelectorAll('[data-view="therapist-flow"]');
-  therapistNavButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
-      setTimeout(() => {
-        const form = document.getElementById('therapist-form');
-        if (form) {
-          resetToStep('therapist', 1, form);
-        }
-      }, 100);
-    });
-  });
-  
-  console.log('✅ Navigation fixes applied');
-});
-
-function resetToStep(flowType, step, form) {
-  // Hide all panels
-  const panels = form.querySelectorAll('.step-panel');
-  panels.forEach(panel => {
-    panel.classList.remove('active');
-  });
-  
-  // Show step 1
-  const targetPanel = form.querySelector(`[data-step="${step}"]`);
-  if (targetPanel) {
-    targetPanel.classList.add('active');
-  }
-  
-  // Hide success/results
-  if (flowType === 'parent') {
-    const results = document.getElementById('parent-results');
-    if (results) results.classList.remove('active');
-  } else if (flowType === 'therapist') {
-    const success = document.getElementById('therapist-success');
-    if (success) {
-      success.classList.remove('visible');
-      success.style.display = 'none';
-    }
-  }
-  
-  // Update progress
-  if (flowType === 'parent') {
-    updateParentProgress();
-  } else if (flowType === 'therapist') {
-    updateTherapistProgress();
-  }
-  
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  console.log(`✅ Reset ${flowType} to step ${step}`);
-}
-
-
-// ============================================
-// NAVIGATION ENHANCEMENTS - Auto Reset to Step 1
-// Date: 2024-12-14
-// ============================================
-
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('🔧 FlowMatch Navigation Enhancements Loading...');
-  
-  setTimeout(() => {
-    // Universal click handler for ALL navigation
-    document.addEventListener('click', function(e) {
-      const btn = e.target.closest('[data-view]');
-      if (!btn) return;
-      
-      const viewId = btn.getAttribute('data-view');
-      
-      // Reset to step 1 when navigating to flows
-      if (viewId === 'parent-flow' || viewId === 'therapist-flow') {
-        setTimeout(() => {
-          const flowType = viewId.replace('-flow', '');
-          const form = document.getElementById(`${flowType}-form`);
-          if (form && typeof resetFlowToStep === 'function') {
-            resetFlowToStep(flowType, 1, form);
-            console.log(`✅ Reset ${flowType} to step 1`);
-          }
-        }, 150);
-      }
-    }, true);
-    
-    console.log('✅ Navigation enhancements active');
-  }, 500);
-});
-
-// Reset flow to specific step
-function resetFlowToStep(flowType, step, form) {
-  if (!form) return;
-  
-  // Hide all step panels
-  const panels = form.querySelectorAll('.step-panel');
-  panels.forEach(p => p.classList.remove('active'));
-  
-  // Show target step
-  const target = form.querySelector(`[data-step="${step}"]`);
-  if (target) target.classList.add('active');
-  
-  // Hide results/success
-  if (flowType === 'parent') {
-    const results = document.getElementById('parent-results');
-    if (results) results.classList.remove('active');
-  } else {
-    const success = document.getElementById('therapist-success');
-    if (success) {
-      success.classList.remove('visible');
-      success.style.display = 'none';
-    }
-  }
-  
-  // Update state
-  if (typeof AppState !== 'undefined') {
-    AppState[`${flowType}Data`].step = step;
-  }
-  
-  // Update progress
-  if (flowType === 'parent' && typeof updateParentProgress === 'function') {
-    updateParentProgress();
-  } else if (flowType === 'therapist' && typeof updateTherapistProgress === 'function') {
-    updateTherapistProgress();
-  }
-  
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ============================================
-// THERAPIST SUCCESS MESSAGE ENHANCEMENT
-// ============================================
-
-// Enhance therapist form submission
-(function enhanceTherapistSubmit() {
-  setTimeout(() => {
-    const therapistForm = document.getElementById('therapist-form');
-    if (!therapistForm) return;
-    
-    // Add backup button click handler
-    const submitButtons = therapistForm.querySelectorAll('button[type="submit"]');
-    submitButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const step4 = therapistForm.querySelector('.step-panel[data-step="4"]');
-        if (step4 && step4.classList.contains('active')) {
-          e.preventDefault();
-          console.log('✅ Therapist registration completed!');
-          if (typeof showTherapistSuccess === 'function') {
-            showTherapistSuccess();
-          }
-        }
-      });
-    });
-    
-    console.log('✅ Therapist success enhancement added');
-  }, 800);
-})();
 
